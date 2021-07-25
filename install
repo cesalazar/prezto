@@ -1,0 +1,69 @@
+#!/bin/zsh
+#
+# Install prezto and p10k config files
+
+# Debug options
+# set -euxo pipefail
+
+# Directory of the repository where this script resides
+base_dir=$(cd "$(dirname "${0}")" &>/dev/null || exit 1; pwd -P)
+
+# Flag for when there are existing config files
+has_existing_conf=false
+
+files_to_backup=(
+    ".p10k.zsh"
+    ".zlogin"
+    ".zlogout"
+    ".zpreztorc"
+    ".zpreztorc.overrides"
+    ".zprofile"
+    ".zshenv"
+    ".zshrc"
+)
+
+cd "${ZDOTDIR:-$HOME}" || exit 1
+
+# File that will contain the backup
+backup_file="${base_dir}/prezto-conf-backup-$(date +%Y-%m-%d-%H%M%S).tgz"
+
+# Flag the existing files to backup them
+for file in "${files_to_backup[@]}"; do
+    if [[ -f "${file}" ]]; then
+        has_existing_conf=true
+    fi
+done
+
+# Notify the user, backup existing files and remove them
+if [[ ${has_existing_conf} == true ]]; then
+    printf "%b" """
+    \033[0;31mBacking up existing config files before deleting them\033[0m
+    """ | sed 's~^\s\+~~'
+
+    # TODO: FIX: `--files-from` is not valid in all distros. Yay!
+    tar chzf "${backup_file}" &>/dev/null \
+        --files-from <(printf "%s\n" "${files_to_backup[@]}")
+
+    printf "%s\n" "Backup created at: ${backup_file}"
+
+    for file in "${files_to_backup[@]}"; do
+        rm -f "${file}"
+    done
+fi
+
+# Create a symlink for each config file
+setopt EXTENDED_GLOB
+for file in "${base_dir}"/runcoms/^README.md(.N); do
+    ln -s "${file}" "${ZDOTDIR:-$HOME}/.${file:t}"
+done
+
+# Success!
+printf "%b\n" "\n\033[0;32mzprezto config installed\033[0m" \
+    "Restart zsh or source ~/.zshrc"
+
+# Change the shell for the current user
+chsh -s /bin/zsh
+
+exit 0
+
+# vim: fdm=manual tabstop=4 softtabstop=4 shiftwidth=4 expandtab:
