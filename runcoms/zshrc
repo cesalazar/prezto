@@ -1,23 +1,265 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 #
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
+# SOURCING
 #
 
-# Source Prezto.
+# prezto
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# powerlevel10k prompt config
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# autojump
+[[ ! -f /usr/share/autojump/autojump.zsh ]] || source /usr/share/autojump/autojump.zsh
+
+# fzf bookmarks
+FZF_MARKS_PLUGIN="${ZDOTDIR:-$HOME}/.config/myscripts/fzf-marks.plugin.zsh"
+if [[ -s "${FZF_MARKS_PLUGIN}" ]]; then
+    FZF_MARKS_JUMP='^[g'
+    source "${FZF_MARKS_PLUGIN}"
+fi
+
+# fzf keybindings
+FZF_KEY_BINDINGS=/usr/share/fzf/key-bindings.zsh
+[[ ! -f "${FZF_KEY_BINDINGS}" ]] || source "${FZF_KEY_BINDINGS}"
+
+# fzf completion
+FZF_COMPLETION=/usr/share/fzf/completion.zsh
+[[ ! -f "${FZF_COMPLETION}" ]] || source "${FZF_COMPLETION}"
+
+# Start ssh-agent
+# https://wiki.archlinux.org/index.php/SSH_keys#Start_ssh-agent_with_systemd_user
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+if [[ ! "$SSH_AUTH_SOCK" ]]; then
+    eval "$(<~/.ssh-agent-thing)" > /dev/null
+fi
+
+# awless
+source <(awless completion zsh)
+
+# thefuck
+eval $(thefuck --alias)
+
+#
+# EXPORTS
+#
+
+# editor and browser
+export VISUAL=/usr/bin/vim
+export EDITOR=/usr/bin/vim
+export BROWSER=/usr/bin/firefox-developer-edition
+
+# xdg
+export XDG_CONFIG_DIR=~/.config
+export XDG_CONFIG_HOME=~/.config
+
+# Reduce zsh timeout when changing mode
+export KEYTIMEOUT=1
+
+# gpg config to sign commits
+export GPG_TTY=$(tty)
+
+# less
+export LESS='-F -g -i -M -R -S -w -X -z-4'
+
+# bat
+export BAT_THEME="Monokai Extended Bright"
+
+# Avoid huge, scaled apps
+export QT_SCALE_FACTOR=1
+export QT_AUTO_SCREEN_SCALE_FACTOR=0
+export QT_QPA_PLATFORMTHEME=qt5ct
+
+# fzf
+export FZF_COMPLETION_TRIGGER="]]"
+export FZF_DEFAULT_OPTS="--reverse --inline-info --multi --cycle \
+    --preview='highlight -O ansi -l {} 2> /dev/null | bat' \
+    --preview-window=hidden \
+    --history=$HOME/.config/fzf/history \
+    --color=dark,fg:-1,bg:-1,bg+:-1,info:-1,hl:3,info:1 \
+    --bind 'ctrl-l:execute(highlight -O ansi -l {} 2> /dev/null | bat)' \
+    --bind 'ctrl-s:toggle-sort' \
+    --bind 'ctrl-x:toggle+down' \
+    --bind 'ctrl-u:page-up' \
+    --bind 'ctrl-d:page-down' \
+    --bind 'ctrl-e:toggle-preview' \
+    --bind 'ctrl-r:toggle-preview-wrap' \
+    --bind 'ctrl-a:toggle-all' \
+    --bind 'alt-i:preview-page-down' \
+    --bind 'alt-o:preview-page-up' \
+    --bind 'alt-a:toggle-all' \
+    --bind 'alt-x:deselect-all' \
+    --bind 'btab:toggle-in' \
+    --bind 'tab:toggle-out' \
+    --bind 'enter:accept'"
+
+# node and npm
+export NPM_PACKAGES="$HOME/.npm-packages"
+export NODE_PATH="$NPM_PACKAGES/lib/node_modules${NODE_PATH:+:$NODE_PATH}"
+export PATH="$NPM_PACKAGES/bin:$PATH"
+export npm_config_prefix="$NPM_PACKAGES"
+
+# sail user and group inside docker
+export WWWUSER=$UID
+export WWWGROUP=$(id -g)
+
+#
+# ALIASES
+#
+
+alias rm='rm -f'
+alias grep='grep -i --color'
+alias egrep='egrep -i --color'
+alias lgrep='ll | grep -E'
+alias lg='lgrep'
+alias att='tmux attach || tmux'
+alias tls='tmux ls'
+alias :q='exit'
+alias :Q=':q'
+alias rell='source ~/.zshrc && rehash && echo "Profile reloaded"'
+alias cls='clear'
+alias pacman='pacman --color always'
+# alias yao='yaourt'
+# AUR package managers: paru pikaur trizen yay
+alias yao='use-yay(){ yay "$@" --color always | bat -p; unset -f use-yay; }; use-yay'
+alias parus='use-paru(){ paru --color always "$@" | bat -p; unset -f use-paru; }; use-paru'
+alias pag="ps aux | grep -v 'grep -i' | grep"
+# alias less='less -r'
+alias ll='exa -lag --git --color=always --group-directories-first'
+alias lll='ll | less'
+alias wic='which'
+alias yd='youtube-dl'
+alias mkdin='make-folder(){ mkdir -p "$1" && cd "$1"; unset -f make-folder; }; make-folder'
+alias cd..='cd ..'
+alias tree='tree -C'
+alias trel='tree | less'
+alias sctl=systemctl
+alias tdiff=pdd
+alias timediff=pdd
+alias cat=bat
+alias pwdc='pwd-copy(){ echo "$(pwd -P)/$1" | tr -d "\n" | pbcopy; unset -f pwd-copy; }; pwd-copy'
+alias dd='dd status=progress'
+alias awl='awless --color always'
+alias covid='covid-cli(){ curl -s -L covid19.trackercli.com/"$@"; unset -f covid-cli }; covid-cli'
+alias sx=sxiv
+alias vis='vim -S Session.vim'
+alias lzd='lazydocker'
+alias fda='fd -HI'
+alias mitm='mitmproxy -p 8888 -s /home/cs/Dev/Utils/myob-proxy.py --no-http2 --set console_focus_follow=false'
+alias mitmweb='mitmweb -p 8888 -s /home/cs/Dev/Utils/myob-proxy.py --no-http2 --set console_focus_follow=false'
+alias nv=nordvpn
+alias nvst='nordvpn status'
+alias nvks='nordvpn set killswitch'
+alias stui=s-tui
+alias open='xdg-open'
+alias oo="spacefm . &>/dev/null &"
+alias top-screen='xrandr --output eDP1 --auto --rotate normal --pos 0x0 --output HDMI2 --auto --rotate normal --above eDP1'
+alias mirror-screen='xrandr --auto --output DP1-1 --same-as eDP1'
+alias -g L='| less'
+
+# (f)uzzy (a)ws (s)sh
+alias fas='/home/cs/.config/myscripts/fuzzy-aws-ssh'
+# parse JSON with jq, include colors, and pipe it to less
+alias jql="jq '.' -C | less"
+# parse YAML with yq, include colors, and pipe it to less
+alias yql="yq '.' -C | less"
+# Clone a cd repository and cd into it
+alias gclin="source /home/cs/.config/myscripts/git-clone-and-auto-cd"
+
+# docker
+alias dk='docker'
+alias dkps='dk ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
+alias dkpso='dk ps --format "table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}"'
+alias dkpsf='dk ps --format "table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}"'
+alias dki='dk images'
+alias dkih='dk image history'
+alias dkrm='dk rm'
+alias dkrmf='dk rm -f'
+alias dkrmi='dk image rm'
+alias dkstp='dk stop'
+alias dkstr='dk start'
+alias dkatt='dk attach'
+alias dkl='dk logs'
+alias dklf='dk logs -f'
+alias dm='docker-machine'
+alias dkc='docker-compose'
+
+# vagrant
+alias vst='vagrant status'
+alias vssh='vagrant ssh'
+alias vup='vagrant up'
+alias vha='vagrant halt'
+alias vah=vha
+
+# VirtualBox
+alias vbm=vboxmanage
+
+# kubectl
+alias kc='kubectl'
+
+# path-extractor - https://github.com/edi9999/path-extractor
+alias pe=path-extractor
+
+# Source nvm only when needed
+alias snvm='source-nvm(){ \
+    unset npm_config_prefix; \
+    source /usr/share/nvm/init-nvm.sh; \
+    nvm current; \
+    unset -f source-nvm; \
+}; source-nvm'
+alias nvm='autosource-nvm(){ \
+    unalias nvm; /
+    snvm && unset -f autosource-nvm; /
+}; autosource-nvm'
+
+# Use vi keybindings in iPython
+alias ipython='ipython2 --TerminalInteractiveShell.editing_mode=vi'
+alias ipython3='ipython3 --TerminalInteractiveShell.editing_mode=vi'
+
+#
+# ZSH CUSTOMIZATIONS
+#
+
+# jump words with C-arrows
+bindkey -M vicmd "5C" vi-forward-blank-word
+bindkey -M vicmd "5D" vi-backward-blank-word
+bindkey -M viins "^[[1;5C" vi-forward-blank-word
+bindkey -M viins "^[[1;5D" vi-backward-blank-word
+bindkey -M vicmd "^[l" vi-forward-blank-word
+bindkey -M vicmd "^[h" vi-backward-blank-word
+bindkey -M viins "^[h" vi-backward-char
+bindkey -M viins "^[l" vi-forward-char
+bindkey -M vicmd 'V' edit-command-line
+bindkey -M viins '^E' transpose-chars
+bindkey -M vicmd '^E' transpose-chars
+bindkey -M viins '^X^X' vi-kill-line
+# Delete backwards with C-delete (^H)
+bindkey -M viins '^H' backward-kill-word
+bindkey -r "^Y"-"^Z"
+
+# Redraw the prompt without creating a newline
+function redraw-prompt() {
+    local precmd
+    for precmd in $precmd_functions; do
+        $precmd
+    done
+    zle reset-prompt
+}
+zle -N redraw-prompt
+
+# Change exported AWS profile
+function change-aws-profile(){
+    export AWS_PROFILE=$(cat ~/.aws/credentials | grep "\[" | grep -v 'onelogin' | tr -d "[]" | fzf --height 50%)
+    zle && zle redraw-prompt
+}
+zle -N change-aws-profile
+bindkey -M viins '^[a' change-aws-profile
+
