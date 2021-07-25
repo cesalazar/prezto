@@ -61,9 +61,6 @@ done
 printf "%b\n" "\n\033[0;32mzprezto config installed\033[0m" \
     "Restart zsh or source ~/.zshrc"
 
-# Change the shell for the current user
-chsh -s /bin/zsh
-
 exit 0
 
 # vim: fdm=manual tabstop=4 softtabstop=4 shiftwidth=4 expandtab:
