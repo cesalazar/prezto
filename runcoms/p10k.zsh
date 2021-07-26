@@ -55,9 +55,9 @@
     anaconda                # conda environment (https://conda.io/)
     pyenv                   # python environment (https://github.com/pyenv/pyenv)
     goenv                   # go environment (https://github.com/syndbg/goenv)
-    nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
-    nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
-    nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
+    # nodenv                # node.js version from nodenv (https://github.com/nodenv/nodenv)
+    # nvm                   # node.js version from nvm (https://github.com/nvm-sh/nvm)
+    # nodeenv               # node.js environment (https://github.com/ekalinin/nodeenv)
     node_version            # node.js version
     # go_version            # go version (https://golang.org)
     # rust_version          # rustc version (https://www.rust-lang.org)
@@ -386,11 +386,11 @@
 
     # My colors
     local gray='%15F'
+    local greenish='%157F'
     local indigo='%014F'
     local magenta='%5F'
     local red='%1F'
     local white='%7F'
-    local greenish='%157F'
 
     local res
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
@@ -399,7 +399,7 @@
       # Otherwise show the first 12 .. the last 12.
       # Tip: To always show local branch name in full without truncation, delete the next line.
       # (( $#branch > 32 )) && branch[13,-13]=".."  # <-- this line
-      res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${magenta}${branch//\%/%%}"
+      res+="${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${magenta}${branch//\%/%%}"
     fi
 
     if [[ -n $VCS_STATUS_TAG
@@ -412,35 +412,42 @@
       # Otherwise show the first 12 .. the last 12.
       # Tip: To always show tag name in full without truncation, delete the next line.
       # (( $#tag > 32 )) && tag[13,-13]=".."  # <-- this line
-      res+="${meta}#${clean}${tag//\%/%%}"
+      res+="${meta}#${tag//\%/%%}"
     fi
 
     # Display the current Git commit if there is no branch and no tag.
     # Tip: To always display the current Git commit, delete the next line.
     [[ -z $VCS_STATUS_LOCAL_BRANCH && -z $VCS_STATUS_TAG ]] &&  # <-- this line
-      res+="${meta}@${clean}${VCS_STATUS_COMMIT[1,8]}"
+      res+="${meta}@${VCS_STATUS_COMMIT[1,8]}"
 
     # Show tracking branch name if it differs from local branch.
     if [[ -n ${VCS_STATUS_REMOTE_BRANCH:#$VCS_STATUS_LOCAL_BRANCH} ]]; then
-      res+="${meta}:${clean}${(V)VCS_STATUS_REMOTE_BRANCH//\%/%%}"  # escape %
+      res+="${meta}:${(V)VCS_STATUS_REMOTE_BRANCH//\%/%%}"  # escape %
     fi
 
-    res+="${white}|"
+    # Show a separator after the first segment only if there are other segments
+    (( VCS_STATUS_COMMITS_BEHIND
+      || VCS_STATUS_COMMITS_AHEAD
+      || VCS_STATUS_NUM_STAGED
+      || VCS_STATUS_STASHES
+      || VCS_STATUS_NUM_CONFLICTED
+      || VCS_STATUS_NUM_UNSTAGED
+      || VCS_STATUS_NUM_UNTRACKED
+    )) && res+="${white}|"
 
     # ⇣42 if behind the remote.
     (( VCS_STATUS_COMMITS_BEHIND )) && res+="${greenish}⇣${VCS_STATUS_COMMITS_BEHIND}"
     # ⇡42 if ahead of the remote; no leading space if also behind the remote: ⇣42⇡42.
-    (( VCS_STATUS_COMMITS_AHEAD && !VCS_STATUS_COMMITS_BEHIND )) && res+=" "
     (( VCS_STATUS_COMMITS_AHEAD  )) && res+="${greenish}⇡${VCS_STATUS_COMMITS_AHEAD}"
     # 42 if have staged changes.
-    (( VCS_STATUS_NUM_STAGED     )) && res+="${modified}${red}${VCS_STATUS_NUM_STAGED}"
+    (( VCS_STATUS_NUM_STAGED     )) && res+="${red}${VCS_STATUS_NUM_STAGED}"
     # <-42 if behind the push remote.
-    # (( VCS_STATUS_PUSH_COMMITS_BEHIND )) && res+=" ${clean}<-${VCS_STATUS_PUSH_COMMITS_BEHIND}"
+    # (( VCS_STATUS_PUSH_COMMITS_BEHIND )) && res+=" <-${VCS_STATUS_PUSH_COMMITS_BEHIND}"
     # (( VCS_STATUS_PUSH_COMMITS_AHEAD && !VCS_STATUS_PUSH_COMMITS_BEHIND )) && res+=" "
     # ->42 if ahead of the push remote; no leading space if also behind: <-42->42.
-    # (( VCS_STATUS_PUSH_COMMITS_AHEAD  )) && res+="${clean}->${VCS_STATUS_PUSH_COMMITS_AHEAD}"
+    # (( VCS_STATUS_PUSH_COMMITS_AHEAD  )) && res+="->${VCS_STATUS_PUSH_COMMITS_AHEAD}"
     # 42 if have stashes.
-    (( VCS_STATUS_STASHES        )) && res+="${clean}${gray}${VCS_STATUS_STASHES}"
+    (( VCS_STATUS_STASHES        )) && res+="${gray}${VCS_STATUS_STASHES}"
     # 'merge' if the repo is in an unusual state.
     [[ -n $VCS_STATUS_ACTION     ]] && res+="${conflicted}${VCS_STATUS_ACTION}"
     # ~42 if have merge conflicts.
@@ -458,7 +465,7 @@
     # in this case.
     (( VCS_STATUS_HAS_UNSTAGED == -1 )) && res+="${modified}-"
 
-    typeset -g my_git_format="${white}[${clean}${res}${white}]${clean}"
+    typeset -g my_git_format="${white}[${res}${white}]"
   }
   functions -M my_git_formatter 2>/dev/null
 
@@ -977,7 +984,7 @@
   # Nvm color.
   typeset -g POWERLEVEL9K_NVM_FOREGROUND=70
   # Custom icon.
-  # typeset -g POWERLEVEL9K_NVM_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_NVM_VISUAL_IDENTIFIER_EXPANSION=''
 
   ############[ nodeenv: node.js environment (https://github.com/ekalinin/nodeenv) ]############
   # Nodeenv color.
@@ -987,7 +994,7 @@
   # Separate environment name from Node version only with a space.
   typeset -g POWERLEVEL9K_NODEENV_{LEFT,RIGHT}_DELIMITER=
   # Custom icon.
-  # typeset -g POWERLEVEL9K_NODEENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_NODEENV_VISUAL_IDENTIFIER_EXPANSION=''
 
   ##############################[ node_version: node.js version ]###############################
   # Node version color.
@@ -995,7 +1002,7 @@
   # Show node version only when in a directory tree containing package.json.
   typeset -g POWERLEVEL9K_NODE_VERSION_PROJECT_ONLY=true
   # Custom icon.
-  # typeset -g POWERLEVEL9K_NODE_VERSION_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_NODE_VERSION_VISUAL_IDENTIFIER_EXPANSION=''
 
   #######################[ go_version: go version (https://golang.org) ]########################
   # Go version color.
@@ -1288,7 +1295,7 @@
   #[ aws: aws profile (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) ]#
   # Show aws only when the the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show aws.
-  typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|awless|terraform|pulumi|terragrunt'
+  # typeset -g POWERLEVEL9K_AWS_SHOW_ON_COMMAND='aws|awless|terraform|pulumi|terragrunt'
 
   # POWERLEVEL9K_AWS_CLASSES is an array with even number of elements. The first element
   # in each pair defines a pattern against which the current AWS profile gets matched.
@@ -1318,7 +1325,7 @@
       # '*test*'  TEST    # to match your needs. Customize them as needed.
       '*'       DEFAULT)
   typeset -g POWERLEVEL9K_AWS_DEFAULT_FOREGROUND=208
-  # typeset -g POWERLEVEL9K_AWS_DEFAULT_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_AWS_DEFAULT_VISUAL_IDENTIFIER_EXPANSION=''
 
   # AWS segment format. The following parameters are available within the expansion.
   #
