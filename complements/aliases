@@ -2,7 +2,7 @@
 # ALIASES
 #
 
-alias ll='exa -lag --git --color=always --group-directories-first'
+alias ll='exa -lag --git --color=always --group-directories-first 2>/dev/null || ls -alh'
 alias lll='ll | less'
 alias grep='grep -i --color'
 alias egrep='egrep -i --color'
@@ -25,7 +25,6 @@ alias trel='tree | less'
 alias sctl=systemctl
 alias tdiff=pdd
 alias timediff=pdd
-alias cat=bat
 alias pwdc='pwd-copy(){ echo "$(pwd -P)/$1" | tr -d "\n" | pbcopy; unset -f pwd-copy; }; pwd-copy'
 alias dd='dd status=progress'
 alias awl='awless --color always'
@@ -41,6 +40,11 @@ alias open='xdg-open'
 alias oo="spacefm . &>/dev/null &"
 alias top-screen='xrandr --output eDP1 --auto --rotate normal --pos 0x0 --output HDMI2 --auto --rotate normal --above eDP1'
 alias mirror-screen='xrandr --auto --output DP1-1 --same-as eDP1'
+
+# bat instead of cat
+if [[ $(command -v bat) ]]; then
+  alias cat=bat
+fi
 
 # AUR package managers: paru pikaur trizen yay yaourt
 # TODO: FIX: the pager lags hard until Enter is pressed
