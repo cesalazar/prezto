@@ -9,8 +9,8 @@ AUTOJUMP_SCRIPT=/usr/share/autojump/autojump.zsh
 # fzf bookmarks
 FZF_MARKS_PLUGIN="${ZDOTDIR:-$HOME}/.config/myscripts/fzf-marks.plugin.zsh"
 if [[ -s "${FZF_MARKS_PLUGIN}" ]]; then
-    FZF_MARKS_JUMP='^[g'
-    source "${FZF_MARKS_PLUGIN}"
+  FZF_MARKS_JUMP='^[g'
+  source "${FZF_MARKS_PLUGIN}"
 fi
 
 # fzf keybindings
@@ -23,17 +23,21 @@ FZF_COMPLETION=/usr/share/fzf/completion.zsh
 
 # Start ssh-agent
 # https://wiki.archlinux.org/index.php/SSH_keys#Start_ssh-agent_with_systemd_user
-if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    ssh-agent > ~/.ssh-agent-thing
+if ! pgrep -u "${USER}" ssh-agent > /dev/null; then
+  ssh-agent > ~/.ssh-agent-thing
 fi
-if [[ ! "$SSH_AUTH_SOCK" ]]; then
-    eval "$(<~/.ssh-agent-thing)" > /dev/null
+if [[ ! "${SSH_AUTH_SOCK}" ]]; then
+  eval "$(<~/.ssh-agent-thing)" > /dev/null
 fi
 
 # awless
-source <(awless completion zsh)
+if [[ $(command -v awless) ]]; then
+  source <(awless completion zsh)
+fi
 
 # thefuck
-eval $(thefuck --alias)
+if [[ $(command -v thefuck) ]]; then
+  eval $(thefuck --alias)
+fi
 
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
