@@ -15,7 +15,6 @@ fi
 # Aliases, exports, keybindings, and other sourcings
 if [[ -d "${ZDOTDIR:-$HOME}/.zprezto/complements/" ]]; then
   for file in "${ZDOTDIR:-$HOME}/.zprezto/complements/"*; do
-    # [[ -f "${file}" ]] && source "${file}"
     source "${file}"
   done
 fi

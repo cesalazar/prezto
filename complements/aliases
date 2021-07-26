@@ -108,6 +108,12 @@ alias nvm='autosource-nvm(){ \
   cd "${prev_pwd}";
 }; autosource-nvm'
 
+# Use vi keybindings in node REPL
+# Requires rlwrap and 'set editing-mode vi' in ~/.inputrc
+if [ $(command -v rlwrap) ] ; then
+  alias node='NODE_NO_READLINE=1 rlwrap node'
+fi
+
 # Use vi keybindings in iPython
 alias ipython='ipython2 --TerminalInteractiveShell.editing_mode=vi'
 alias ipython3='ipython3 --TerminalInteractiveShell.editing_mode=vi'
