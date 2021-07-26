@@ -15,6 +15,7 @@ bindkey -M vicmd 'V' edit-command-line
 bindkey -M viins '^E' transpose-chars
 bindkey -M vicmd '^E' transpose-chars
 bindkey -M viins '^X^X' vi-kill-line
+bindkey -M viins '^R' history-incremental-search-backward
 # Delete backwards with C-delete (^H)
 bindkey -M viins '^H' backward-kill-word
 # Conflicts with vim Yankring
