@@ -9,6 +9,16 @@
 # Debug options
 # set -euxo pipefail
 
+# Get the options for this script
+while getopts ":dv:" option; do
+    case $option in
+        d) # (d)evelopment mode - keeps .git files and folders
+            printf "%b\n" "\n\033[0;32mDevelopment mode enabled\033[0m"
+            enable_dev_mode=true;;
+        *)
+    esac
+done
+
 # Directory where this script resides
 base_dir=$(cd "$(dirname "${0}")" &> /dev/null || exit 1; pwd -P)
 
@@ -73,8 +83,9 @@ for symlink in "${symlinks_to_remove[@]}"; do
 done
 
 # Remove .git directories to reduce space used
-# TODO: FIX: set an option-based flag to keep the git files
-find "${base_dir}" -iname ".git*" -exec rm -rf {} \; &> /dev/null
+if [[ ${enable_dev_mode:-false} == false ]]; then
+    find "${base_dir}" -iname ".git*" -exec rm -rf {} \; &> /dev/null
+fi
 
 # Success!
 printf "%b\n" "\n\033[0;32mPrezto config installed\033[0m" \
