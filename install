@@ -12,9 +12,6 @@
 # Directory where this script resides
 base_dir=$(cd "$(dirname "${0}")" &> /dev/null || exit 1; pwd -P)
 
-# Flag for when there are existing config files
-has_existing_conf=false
-
 # File that will contain a backup of the existing config files
 backup_file="${base_dir}/prezto-conf-backup-$(date +%Y-%m-%d-%H%M%S).tar"
 
@@ -45,7 +42,6 @@ for file in "${base_dir}"/runcoms/^README.md(.N); do
 
     # Backup existing config file, if it exists, and remove it
     if [[ -e "${target}" ]]; then
-        has_existing_conf=true
         tar rhf "${backup_file}" "${target}" &> /dev/null
         rm -f "${target}"
     fi
@@ -54,7 +50,7 @@ for file in "${base_dir}"/runcoms/^README.md(.N); do
 done
 
 # Notify the user about the backup if it was made
-if [[ ${has_existing_conf} == true ]]; then
+if [[ -f "${backup_file}" ]]; then
     printf "%b" """
     \033[0;31mBacking up existing config files before replacing them\033[0m
     Backup created at: ${backup_file}
