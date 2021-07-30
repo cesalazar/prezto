@@ -4,6 +4,8 @@ All the awesomeness of [Prezto][1] preconfigured with [Powerlevel10k][2] prompt;
 tailored to suit my needs, and to exclude unused modules to save storage space
 and increase install speed.
 
+![st + Prezto + Powerlevel10k](.github/media/st-prezto-powerlevel10k.png)
+
 ## Installation
 
 Prezto will work with any recent release of Zsh, but the minimum required
@@ -21,8 +23,7 @@ version is **4.3.11**.
     git clone --depth 1 https://github.com/cesalazar/prezto ~/.zprezto
     ```
 
-03. Init the git submodules and create symlinks to the config files provided
-    withe the `install` script. This will remove all the `.git*` files and
+03. Run the `install` script. This will remove all the `.git*` files and
     folders by default; pass the `-d` option to preserve them:
 
     ```console
