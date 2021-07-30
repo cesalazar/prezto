@@ -1,65 +1,88 @@
 #!/bin/zsh
 #
-# Install prezto and p10k config files
+# This script:
+#   - Back ups existing config files if they exist
+#   - Symlinks zsh, Prezto, and Powerlevel10k config files
+#   - Initializes Prezto external modules (git submodules)
+#   - Removes symlinks broken due to not initializing some git submodules
 
 # Debug options
 # set -euxo pipefail
 
-# Directory of the repository where this script resides
-base_dir=$(cd "$(dirname "${0}")" &>/dev/null || exit 1; pwd -P)
+# Directory where this script resides
+base_dir=$(cd "$(dirname "${0}")" &> /dev/null || exit 1; pwd -P)
 
 # Flag for when there are existing config files
 has_existing_conf=false
 
-files_to_backup=(
-    ".p10k.zsh"
-    ".zlogin"
-    ".zlogout"
-    ".zpreztorc"
-    ".zpreztorc.overrides"
-    ".zprofile"
-    ".zshenv"
-    ".zshrc"
+# File that will contain a backup of the existing config files
+backup_file="${base_dir}/prezto-conf-backup-$(date +%Y-%m-%d-%H%M%S).tar"
+
+# External Prezto modules to initialize as git submodules
+git_submodules=(
+    history-substring-search/external
+    syntax-highlighting/external
+    completion/external
+    prompt/external/powerlevel10k
 )
 
+# Symlinks to remove: Powerlevel10k complains about these symlinks that are
+# broken because not all the git submodules are initialized
+symlinks_to_remove=(
+    async
+    prompt_agnoster_setup
+    prompt_powerline_setup
+    prompt_pure_setup
+)
+
+# cd into the $HOME directory
 cd "${ZDOTDIR:-$HOME}" || exit 1
-
-# File that will contain the backup
-backup_file="${base_dir}/prezto-conf-backup-$(date +%Y-%m-%d-%H%M%S).tgz"
-
-# Flag the existing files to backup them
-for file in "${files_to_backup[@]}"; do
-    if [[ -f "${file}" ]]; then
-        has_existing_conf=true
-    fi
-done
-
-# Notify the user, backup existing files and remove them
-if [[ ${has_existing_conf} == true ]]; then
-    printf "%b" """
-    \033[0;31mBacking up existing config files before deleting them\033[0m
-    """ | sed 's~^\s\+~~'
-
-    # TODO: FIX: `--files-from` is not valid in all distros. Yay!
-    tar chzf "${backup_file}" &>/dev/null \
-        --files-from <(printf "%s\n" "${files_to_backup[@]}")
-
-    printf "%s\n" "Backup created at: ${backup_file}"
-
-    for file in "${files_to_backup[@]}"; do
-        rm -f "${file}"
-    done
-fi
 
 # Create a symlink for each config file
 setopt EXTENDED_GLOB
 for file in "${base_dir}"/runcoms/^README.md(.N); do
-    ln -s "${file}" "${ZDOTDIR:-$HOME}/.${file:t}"
+    target="${ZDOTDIR:-$HOME}/.${file:t}"
+
+    # Backup existing config file, if it exists, and remove it
+    if [[ -e "${target}" ]]; then
+        has_existing_conf=true
+        tar rhf "${backup_file}" "${target}" &> /dev/null
+        rm -f "${target}"
+    fi
+
+    ln -s "${file}" "${target}"
 done
 
+# Notify the user about the backup if it was made
+if [[ ${has_existing_conf} == true ]]; then
+    printf "%b" """
+    \033[0;31mBacking up existing config files before replacing them\033[0m
+    Backup created at: ${backup_file}
+    """ | sed 's~^\s\+~~'
+fi
+
+# cd into the directory containing this script
+cd "${base_dir}" || exit 1
+
+# Initialize git submodules if they exist
+if [[ -d "${base_dir}/.git" && -f "${base_dir}/.gitmodules" ]]; then
+    for module in "${git_submodules[@]}"; do
+        git submodule update --quiet --init "modules/${module}"
+    done
+fi
+
+# Remove broken symlinks for prompt module
+for symlink in "${symlinks_to_remove[@]}"; do
+    rm -f "modules/prompt/functions/${symlink}" &> /dev/null
+done
+
+# Remove .git directories to reduce space used
+# TODO: FIX: set an option-based flag to keep the git files
+find "${base_dir}" -iname ".git*" -exec rm -rf {} \; &> /dev/null
+
 # Success!
-printf "%b\n" "\n\033[0;32mzprezto config installed\033[0m" \
-    "Restart zsh or source ~/.zshrc"
+printf "%b\n" "\n\033[0;32mPrezto config installed\033[0m" \
+    "Restart zsh or source ~/.zshrc\n"
 
 exit 0
 
