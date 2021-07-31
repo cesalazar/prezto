@@ -2,12 +2,10 @@
 # ALIASES
 #
 
-alias ll='exa -lag --git --color=always --group-directories-first 2>/dev/null || ls -alh'
-alias lll='ll | less'
 alias grep='grep -i --color'
 alias egrep='egrep -i --color'
 alias lgrep='ll | grep -E'
-alias lg='lgrep'
+alias lg=lgrep
 alias pag="ps aux | grep -v 'grep -i' | grep"
 alias eng='env | grep'
 alias att='tmux attach || tmux'
@@ -33,23 +31,25 @@ alias sx=sxiv
 alias vis='vim -S Session.vim'
 alias lzd='lazydocker'
 alias fda='fd -HI'
-alias mitm='mitmproxy -p 8888 -s /home/cs/Dev/Utils/myob-proxy.py --no-http2 --set console_focus_follow=false'
-alias mitmweb='mitmweb -p 8888 -s /home/cs/Dev/Utils/myob-proxy.py --no-http2 --set console_focus_follow=false'
 alias stui=s-tui
 alias open='xdg-open'
-alias oo="spacefm . &>/dev/null &"
-alias top-screen='xrandr --output eDP1 --auto --rotate normal --pos 0x0 --output HDMI2 --auto --rotate normal --above eDP1'
+alias oo="spacefm . &> /dev/null &"
 alias mirror-screen='xrandr --auto --output DP1-1 --same-as eDP1'
-
-# bat instead of cat
-if [[ $(command -v bat) ]]; then
-  alias cat=bat
-fi
+alias top-screen='xrandr --output eDP1 --auto --rotate normal --pos 0x0 --output HDMI2 --auto --rotate normal --above eDP1'
+alias ll='ls -alh'
+alias lll='ll | less'
+[[ $(command -v exa) ]] && alias ll='exa -lag --git --color=always --group-directories-first'
+[[ $(command -v bat) ]] && alias cat=bat
 
 # AUR package managers: paru pikaur trizen yay yaourt
 # TODO: FIX: the pager lags hard until Enter is pressed
 alias yao='use-yay(){ yay "$@" --color always | bat -p; unset -f use-yay; }; use-yay'
 alias parus='use-paru(){ paru --color always "$@" | bat -p; unset -f use-paru; }; use-paru'
+
+# Show zprezto git module aliases
+# Use: awk -F'\`' '{ print \$2 }'; to execute the selected command
+alias zg="zprezto-git-help(){ cat ~/.zprezto/modules/git/README.md \
+  | grep -E '^- \`' | fzf | xargs -I! printf '%s\n' '!'; unset -f zprezto-git-help; }; zprezto-git-help"
 
 # nordvpn
 alias nv=nordvpn
@@ -57,14 +57,10 @@ alias nvfw='nv set firewall'
 alias nvks='nv set killswitch'
 alias nvst='nv status'
 
-# (f)uzzy (a)ws (s)sh
-alias fas='/home/cs/.config/myscripts/fuzzy-aws-ssh'
 # parse JSON with jq, include colors, and pipe it to less
 alias jql="jq '.' -C | less"
 # parse YAML with yq, include colors, and pipe it to less
 alias yql="yq '.' -C | less"
-# Clone a cd repository and cd into it
-alias gclin="source /home/cs/.config/myscripts/git-clone-and-auto-cd"
 
 # docker
 alias dk='docker'
@@ -114,9 +110,7 @@ alias nvm='autosource-nvm(){ \
 
 # Use vi keybindings in node REPL
 # Requires rlwrap and 'set editing-mode vi' in ~/.inputrc
-if [ $(command -v rlwrap) ] ; then
-  alias node='NODE_NO_READLINE=1 rlwrap node'
-fi
+[[ $(command -v rlwrap) ]] && alias node='NODE_NO_READLINE=1 rlwrap node'
 
 # Use vi keybindings in iPython
 alias ipython='ipython2 --TerminalInteractiveShell.editing_mode=vi'
