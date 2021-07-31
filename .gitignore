@@ -3,3 +3,6 @@
 modules/*/cache.zsh
 contrib
 complements/local
+
+# Backups created by the install script
+prezto-conf-backup-*.tar

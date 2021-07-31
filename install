@@ -25,15 +25,6 @@ base_dir=$(cd "$(dirname "${0}")" &> /dev/null || exit 1; pwd -P)
 # File that will contain a backup of the existing config files
 backup_file="${base_dir}/prezto-conf-backup-$(date +%Y-%m-%d-%H%M%S).tar"
 
-# External Prezto modules to initialize as git submodules
-git_submodules=(
-    modules/history-substring-search/external
-    modules/syntax-highlighting/external
-    modules/completion/external
-    modules/prompt/external/powerlevel10k
-    complements/fzf
-)
-
 # Symlinks to remove: Powerlevel10k complains about these symlinks that are
 # broken because not all the git submodules are initialized
 symlinks_to_remove=(
@@ -73,10 +64,7 @@ cd "${base_dir}" || exit 1
 
 # Initialize git submodules if they exist
 if [[ -d "${base_dir}/.git" && -f "${base_dir}/.gitmodules" ]]; then
-    for module in "${git_submodules[@]}"; do
-        # TODO: FIX: install all the submodules instead of a manual list
-        git submodule update --quiet --init "${module}"
-    done
+    git submodule update --quiet --init
 fi
 
 # Install fzf with keybindings and completion
@@ -87,7 +75,10 @@ fi
 
 # Remove broken symlinks for prompt module
 for symlink in "${symlinks_to_remove[@]}"; do
-    rm -f "modules/prompt/functions/${symlink}" &> /dev/null
+    symlink="modules/prompt/functions/${symlink}"
+    rm -f "${symlink}" &> /dev/null
+    # Make git ignore the removed symlinks
+    git update-index --assume-unchanged "${symlink}"
 done
 
 # Remove .git directories to reduce space used
