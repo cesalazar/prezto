@@ -77,6 +77,12 @@ if [[ -d "${base_dir}/.git" && -f "${base_dir}/.gitmodules" ]]; then
     done
 fi
 
+# Install fzf with keybindings and completion
+if [[ ! -f "${ZDOTDIR:-$HOME}/.fzf.zsh" ]]; then
+    "${base_dir}/complements/fzf/install" \
+        --key-bindings --completion --no-update-rc
+fi
+
 # Remove broken symlinks for prompt module
 for symlink in "${symlinks_to_remove[@]}"; do
     rm -f "modules/prompt/functions/${symlink}" &> /dev/null

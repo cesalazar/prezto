@@ -29,3 +29,7 @@
 	path = modules/prompt/external/powerlevel10k
 	url = https://github.com/romkatv/powerlevel10k.git
 	shallow = true
+[submodule "complements/fzf"]
+	path = complements/fzf
+	url = https://github.com/junegunn/fzf.git
+	shallow = true
