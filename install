@@ -27,10 +27,11 @@ backup_file="${base_dir}/prezto-conf-backup-$(date +%Y-%m-%d-%H%M%S).tar"
 
 # External Prezto modules to initialize as git submodules
 git_submodules=(
-    history-substring-search/external
-    syntax-highlighting/external
-    completion/external
-    prompt/external/powerlevel10k
+    modules/history-substring-search/external
+    modules/syntax-highlighting/external
+    modules/completion/external
+    modules/prompt/external/powerlevel10k
+    complements/fzf
 )
 
 # Symlinks to remove: Powerlevel10k complains about these symlinks that are
@@ -63,7 +64,7 @@ done
 if [[ -f "${backup_file}" ]]; then
     printf "%b" """
     \033[0;31mBacking up existing config files before replacing them\033[0m
-    Backup created at: ${backup_file}
+    Backup created at: ${backup_file}\n
     """ | sed 's~^\s\+~~'
 fi
 
@@ -73,14 +74,15 @@ cd "${base_dir}" || exit 1
 # Initialize git submodules if they exist
 if [[ -d "${base_dir}/.git" && -f "${base_dir}/.gitmodules" ]]; then
     for module in "${git_submodules[@]}"; do
-        git submodule update --quiet --init "modules/${module}"
+        # TODO: FIX: install all the submodules instead of a manual list
+        git submodule update --quiet --init "${module}"
     done
 fi
 
 # Install fzf with keybindings and completion
 if [[ ! -f "${ZDOTDIR:-$HOME}/.fzf.zsh" ]]; then
     "${base_dir}/complements/fzf/install" \
-        --key-bindings --completion --no-update-rc
+        --key-bindings --completion --no-bash --no-update-rc
 fi
 
 # Remove broken symlinks for prompt module
