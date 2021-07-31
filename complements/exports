@@ -1,0 +1,65 @@
+#
+# EXPORTS
+#
+
+# editor and browser
+export VISUAL=/usr/bin/vim
+export EDITOR=/usr/bin/vim
+export BROWSER=/usr/bin/firefox-developer-edition
+
+# xdg
+export XDG_CONFIG_DIR=~/.config
+export XDG_CONFIG_HOME=~/.config
+
+# Reduce zsh timeout when switching mode
+export KEYTIMEOUT=1
+
+# gpg config to sign commits
+export GPG_TTY=$(tty)
+
+# less
+export LESS='-F -g -i -M -R -S -w -X -z-4'
+
+# bat
+export BAT_THEME="Monokai Extended Bright"
+
+# Avoid huge, scaled apps
+export QT_SCALE_FACTOR=1
+export QT_AUTO_SCREEN_SCALE_FACTOR=0
+export QT_QPA_PLATFORMTHEME=qt5ct
+
+# fzf
+export FZF_MARKS_JUMP='^[g'
+export FZF_COMPLETION_TRIGGER="]]"
+export FZF_DEFAULT_OPTS="--reverse --inline-info --multi --cycle \
+  --preview='highlight -O ansi -l {} 2> /dev/null | bat' \
+  --preview-window=hidden \
+  --history=$HOME/.config/fzf/history \
+  --color=dark,fg:-1,bg:-1,bg+:-1,info:-1,hl:3,info:1 \
+  --bind 'ctrl-l:execute(highlight -O ansi -l {} 2> /dev/null | bat)' \
+  --bind 'ctrl-s:toggle-sort' \
+  --bind 'ctrl-x:toggle+down' \
+  --bind 'ctrl-u:page-up' \
+  --bind 'ctrl-d:page-down' \
+  --bind 'ctrl-e:toggle-preview' \
+  --bind 'ctrl-r:toggle-preview-wrap' \
+  --bind 'ctrl-a:toggle-all' \
+  --bind 'alt-i:preview-page-down' \
+  --bind 'alt-o:preview-page-up' \
+  --bind 'alt-a:toggle-all' \
+  --bind 'alt-x:deselect-all' \
+  --bind 'btab:toggle-in' \
+  --bind 'tab:toggle-out' \
+  --bind 'enter:accept'"
+
+# node and npm
+export NPM_PACKAGES="$HOME/.npm-packages"
+export NODE_PATH="$NPM_PACKAGES/lib/node_modules${NODE_PATH:+:$NODE_PATH}"
+export PATH="$NPM_PACKAGES/bin:$PATH"
+export npm_config_prefix="$NPM_PACKAGES"
+
+# sail user and group inside docker
+export WWWUSER=$UID
+export WWWGROUP=$(id -g)
+
+# vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:

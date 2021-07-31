@@ -1,0 +1,47 @@
+#
+# KEYBINGINS
+#
+
+# Jump words with C-arrows
+bindkey -M vicmd "5C" vi-forward-blank-word
+bindkey -M vicmd "5D" vi-backward-blank-word
+bindkey -M viins "^[[1;5C" vi-forward-blank-word
+bindkey -M viins "^[[1;5D" vi-backward-blank-word
+bindkey -M vicmd "^[l" vi-forward-blank-word
+bindkey -M vicmd "^[h" vi-backward-blank-word
+bindkey -M viins "^[h" vi-backward-char
+bindkey -M viins "^[l" vi-forward-char
+bindkey -M vicmd 'V' edit-command-line
+bindkey -M viins '^E' transpose-chars
+bindkey -M vicmd '^E' transpose-chars
+bindkey -M viins '^X^X' vi-kill-line
+bindkey -M viins '^R' history-incremental-search-backward
+# Delete backwards with C-delete (^H)
+bindkey -M viins '^H' backward-kill-word
+# Conflicts with vim Yankring
+bindkey -r "^Y"-"^Z"
+
+# Redraw the prompt without creating a newline
+function redraw-prompt() {
+  local precmd
+  for precmd in $precmd_functions; do
+    $precmd
+  done
+  zle reset-prompt
+}
+zle -N redraw-prompt
+
+# Change exported AWS profile
+function change-aws-profile() {
+  AWS_CREDENTIALS=~/.aws/credentials
+  if [[ -f "${AWS_CREDENTIALS}" ]]; then
+    AWS_PROFILE=$(cat "${AWS_CREDENTIALS}" | grep "\[" | grep -v 'onelogin' \
+      | tr -d "[]" | fzf --height 50%)
+    export AWS_PROFILE
+    zle && zle redraw-prompt
+  fi
+}
+zle -N change-aws-profile
+bindkey -M viins '^[a' change-aws-profile
+
+# vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:

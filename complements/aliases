@@ -1,0 +1,127 @@
+#
+# ALIASES
+#
+
+alias grep='grep -i --color'
+alias egrep='egrep -i --color'
+alias lgrep='ll | grep -E'
+alias lg=lgrep
+alias pag="ps aux | grep -v 'grep -i' | grep"
+alias eng='env | grep'
+alias att='tmux attach || tmux'
+alias :q='exit'
+alias :Q=':q'
+alias rell='source ~/.zshrc && rehash && echo "Profile reloaded"'
+alias cls='clear'
+alias pacman='pacman --color always'
+alias wic='which'
+alias yd='youtube-dl'
+alias mkdin='make-folder(){ mkdir -p "$1" && cd "$1"; unset -f make-folder; }; make-folder'
+alias cd..='cd ..'
+alias tree='tree -C'
+alias trel='tree | less'
+alias sctl=systemctl
+alias tdiff=pdd
+alias timediff=pdd
+alias pwdc='pwd-copy(){ echo "$(pwd -P)/$1" | tr -d "\n" | pbcopy; unset -f pwd-copy; }; pwd-copy'
+alias dd='dd status=progress'
+alias awl='awless --color always'
+alias covid='covid-cli(){ curl -s -L covid19.trackercli.com/"$@"; unset -f covid-cli }; covid-cli'
+alias sx=sxiv
+alias vis='vim -S Session.vim'
+alias lzd='lazydocker'
+alias fda='fd -HI'
+alias stui=s-tui
+alias open='xdg-open'
+alias oo="spacefm . &> /dev/null &"
+alias mirror-screen='xrandr --auto --output DP1-1 --same-as eDP1'
+alias top-screen='xrandr --output eDP1 --auto --rotate normal --pos 0x0 --output HDMI2 --auto --rotate normal --above eDP1'
+alias ll='ls -alh'
+alias lll='ll | less'
+[[ $(command -v exa) ]] && alias ll='exa -lag --git --color=always --group-directories-first'
+[[ $(command -v bat) ]] && alias cat=bat
+
+# Copy to clipboard in order of preference
+[[ $(command -v xsel) ]] && alias pbcopy='xsel -ib'
+[[ $(command -v xclip) ]] && alias pbcopy='xclip -selection clipboard -in'
+
+# AUR package managers: paru pikaur trizen yay yaourt
+# TODO: FIX: the pager lags hard until Enter is pressed
+alias yao='use-yay(){ yay "$@" --color always | bat -p; unset -f use-yay; }; use-yay'
+alias parus='use-paru(){ paru --color always "$@" | bat -p; unset -f use-paru; }; use-paru'
+
+# Show zprezto git module aliases
+# Use: awk -F'\`' '{ print \$2 }'; to execute the selected command
+alias zg="zprezto-git-help(){ cat ~/.zprezto/modules/git/README.md \
+  | grep -E '^- \`' | fzf | xargs -I! printf '%s\n' '!'; unset -f zprezto-git-help; }; zprezto-git-help"
+
+# nordvpn
+alias nv=nordvpn
+alias nvfw='nv set firewall'
+alias nvks='nv set killswitch'
+alias nvst='nv status'
+
+# parse JSON with jq, include colors, and pipe it to less
+alias jql="jq '.' -C | less"
+# parse YAML with yq, include colors, and pipe it to less
+alias yql="yq '.' -C | less"
+
+# docker
+alias dk='docker'
+alias dkatt='dk attach'
+alias dkc='docker-compose'
+alias dki='dk images'
+alias dkih='dk image history'
+alias dkl='dk logs'
+alias dklf='dk logs -f'
+alias dkps='dk ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
+alias dkrm='dk rm'
+alias dkrmf='dk rm -f'
+alias dkrmi='dk image rm'
+alias dkstp='dk stop'
+alias dkstr='dk start'
+
+# vagrant
+alias vah='vagrant halt'
+alias vha=vah
+alias vssh='vagrant ssh'
+alias vst='vagrant status'
+alias vup='vagrant up'
+
+# VirtualBox
+alias vbm=vboxmanage
+
+# kubectl
+alias kc='kubectl'
+
+# path-extractor - https://github.com/edi9999/path-extractor
+alias pe=path-extractor
+
+# Source nvm only when needed
+alias snvm='source-nvm(){ \
+  unset npm_config_prefix; \
+  source /usr/share/nvm/init-nvm.sh; \
+  nvm current; \
+  unset -f source-nvm; \
+}; source-nvm'
+alias nvm='autosource-nvm(){ \
+  # Manually return to prev dir because the path becomes `/` when this execs
+  prev_pwd="$(pwd)";
+  unalias nvm; /
+  snvm && unset -f autosource-nvm; /
+  cd "${prev_pwd}";
+}; autosource-nvm'
+
+# Use vi keybindings in node REPL
+# Requires rlwrap and 'set editing-mode vi' in ~/.inputrc
+[[ $(command -v rlwrap) ]] && alias node='NODE_NO_READLINE=1 rlwrap node'
+
+# Use vi keybindings in iPython
+alias ipython='ipython2 --TerminalInteractiveShell.editing_mode=vi'
+alias ipython3='ipython3 --TerminalInteractiveShell.editing_mode=vi'
+
+# Globals
+alias -g L='| less'
+alias -g P='| pe | fzf | read filename; [ ! -z $filename ] && vim $filename'
+
+# vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
