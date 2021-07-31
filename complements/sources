@@ -6,13 +6,6 @@
 AUTOJUMP_SCRIPT=/usr/share/autojump/autojump.zsh
 [[ ! -f "${AUTOJUMP_SCRIPT}" ]] || source "${AUTOJUMP_SCRIPT}"
 
-# fzf bookmarks
-FZF_MARKS_PLUGIN="${ZDOTDIR:-$HOME}/.config/myscripts/fzf-marks.plugin.zsh"
-if [[ -s "${FZF_MARKS_PLUGIN}" ]]; then
-  FZF_MARKS_JUMP='^[g'
-  source "${FZF_MARKS_PLUGIN}"
-fi
-
 # fzf keybindings
 FZF_KEY_BINDINGS=/usr/share/fzf/key-bindings.zsh
 [[ ! -f "${FZF_KEY_BINDINGS}" ]] || source "${FZF_KEY_BINDINGS}"

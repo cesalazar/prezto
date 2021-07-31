@@ -29,6 +29,7 @@ export QT_AUTO_SCREEN_SCALE_FACTOR=0
 export QT_QPA_PLATFORMTHEME=qt5ct
 
 # fzf
+export FZF_MARKS_JUMP='^[g'
 export FZF_COMPLETION_TRIGGER="]]"
 export FZF_DEFAULT_OPTS="--reverse --inline-info --multi --cycle \
   --preview='highlight -O ansi -l {} 2> /dev/null | bat' \
