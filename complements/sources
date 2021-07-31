@@ -6,14 +6,6 @@
 AUTOJUMP_SCRIPT=/usr/share/autojump/autojump.zsh
 [[ ! -f "${AUTOJUMP_SCRIPT}" ]] || source "${AUTOJUMP_SCRIPT}"
 
-# fzf keybindings
-FZF_KEY_BINDINGS=/usr/share/fzf/key-bindings.zsh
-[[ ! -f "${FZF_KEY_BINDINGS}" ]] || source "${FZF_KEY_BINDINGS}"
-
-# fzf completion
-FZF_COMPLETION=/usr/share/fzf/completion.zsh
-[[ ! -f "${FZF_COMPLETION}" ]] || source "${FZF_COMPLETION}"
-
 # Start ssh-agent
 # https://wiki.archlinux.org/index.php/SSH_keys#Start_ssh-agent_with_systemd_user
 if ! pgrep -u "${USER}" ssh-agent > /dev/null; then
