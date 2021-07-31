@@ -34,7 +34,7 @@ export FZF_COMPLETION_TRIGGER="]]"
 export FZF_DEFAULT_OPTS="--reverse --inline-info --multi --cycle \
   --preview='highlight -O ansi -l {} 2> /dev/null | bat' \
   --preview-window=hidden \
-  --history=$HOME/.config/fzf/history \
+  --history=$HOME/.fzf-history \
   --color=dark,fg:-1,bg:-1,bg+:-1,info:-1,hl:3,info:1 \
   --bind 'ctrl-l:execute(highlight -O ansi -l {} 2> /dev/null | bat)' \
   --bind 'ctrl-s:toggle-sort' \
