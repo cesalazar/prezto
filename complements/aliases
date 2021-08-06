@@ -72,16 +72,19 @@ alias yql="yq '.' -C | less"
 alias dk='docker'
 alias dkatt='dk attach'
 alias dkc='docker-compose'
+alias dkcps='dkc ps'
 alias dki='dk images'
 alias dkih='dk image history'
 alias dkl='dk logs'
 alias dklf='dk logs -f'
-alias dkps='dk ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
+alias dkpsa='dk ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
 alias dkrm='dk rm'
 alias dkrmf='dk rm -f'
 alias dkrmi='dk image rm'
 alias dkstp='dk stop'
 alias dkstr='dk start'
+alias dkps='[[ "$(find . -maxdepth 1 -regextype sed -regex \
+  "./\(docker\|compose\).*.ya\?ml")" ]] && dkcps || dkpsa'
 
 # vagrant
 alias vah='vagrant halt'
