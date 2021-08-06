@@ -37,6 +37,7 @@ alias open='xdg-open'
 alias oo="spacefm . &> /dev/null &"
 alias mirror-screen='xrandr --auto --output DP1-1 --same-as eDP1'
 alias top-screen='xrandr --output eDP1 --auto --rotate normal --pos 0x0 --output HDMI2 --auto --rotate normal --above eDP1'
+alias fdiff='fancy-diff(){ diff -u "${@}" | diff-so-fancy | less; unset -f fancy-diff; }; fancy-diff'
 alias ll='ls -alh'
 alias lll='ll | less'
 [[ $(command -v exa) ]] && alias ll='exa -lag --git --color=always --group-directories-first'
