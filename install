@@ -64,14 +64,14 @@ cd "${base_dir}" || exit 1
 
 # Initialize git submodules if they exist
 if [[ -d "${base_dir}/.git" && -f "${base_dir}/.gitmodules" ]]; then
-    git submodule update --quiet --init
+    printf "%b\n" "\033[0;32mInitializing git submodules\033[0m" \
+        "This may take a while\n"
+    git submodule update --depth 1 --jobs 10 --quiet --init
 fi
 
 # Install fzf with keybindings and completion
-if [[ ! -f "${ZDOTDIR:-$HOME}/.fzf.zsh" ]]; then
-    "${base_dir}/complements/fzf/install" \
-        --key-bindings --completion --no-bash --no-update-rc
-fi
+"${base_dir}/complements/fzf/install" \
+    --key-bindings --completion --no-bash --no-update-rc
 
 # Remove broken symlinks for prompt module
 for symlink in "${symlinks_to_remove[@]}"; do

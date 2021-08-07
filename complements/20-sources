@@ -2,9 +2,22 @@
 # SOURCING
 #
 
+# awless
+[[ ! $(command -v awless) ]] || source <(awless completion zsh)
+
 # autojump
 AUTOJUMP_SCRIPT=/usr/share/autojump/autojump.zsh
 [[ ! -f "${AUTOJUMP_SCRIPT}" ]] || source "${AUTOJUMP_SCRIPT}"
+
+# fzf
+[[ ! -f ~/.fzf.zsh ]] || source ~/.fzf.zsh
+
+# fzf-marks plugin
+FZF_MARKS_SOURCE=~/.zprezto/complements/fzf-marks/fzf-marks.plugin.zsh
+[[ ! -f "${FZF_MARKS_SOURCE}" ]] || source "${FZF_MARKS_SOURCE}"
+
+# thefuck
+[[ ! $(command -v thefuck) ]] || eval $(thefuck --alias)
 
 # Start ssh-agent
 # https://wiki.archlinux.org/index.php/SSH_keys#Start_ssh-agent_with_systemd_user
@@ -13,16 +26,6 @@ if ! pgrep -u "${USER}" ssh-agent > /dev/null; then
 fi
 if [[ ! "${SSH_AUTH_SOCK}" ]]; then
   eval "$(<~/.ssh-agent-thing)" > /dev/null
-fi
-
-# awless
-if [[ $(command -v awless) ]]; then
-  source <(awless completion zsh)
-fi
-
-# thefuck
-if [[ $(command -v thefuck) ]]; then
-  eval $(thefuck --alias)
 fi
 
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:

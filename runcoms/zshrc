@@ -12,9 +12,6 @@ fi
 # PowerLevel10k prompt config
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# fzf (needs to be sourced before fzf-marks plugin)
-[[ ! -f ~/.fzf.zsh ]] || source ~/.fzf.zsh
-
 # Aliases, exports, keybindings, and other sourcings
 if [[ -d "${ZDOTDIR:-$HOME}/.zprezto/complements/" ]]; then
   for file in "${ZDOTDIR:-$HOME}/.zprezto/complements/"*; do
