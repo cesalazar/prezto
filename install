@@ -44,7 +44,7 @@ for file in "${base_dir}"/runcoms/^README.md(.N); do
 
     # Backup existing config file, if it exists, and remove it
     if [[ -e "${target}" ]]; then
-        tar rhf "${backup_file}" "${target}" &> /dev/null
+        tar rhf "${backup_file}" "${target}"
         rm -f "${target}"
     fi
 
@@ -64,6 +64,7 @@ cd "${base_dir}" || exit 1
 
 # Initialize git submodules if they exist
 if [[ -d "${base_dir}/.git" && -f "${base_dir}/.gitmodules" ]]; then
+    printf "%s\n" "Initializing submodules..."
     git submodule update --quiet --init
 fi
 
@@ -74,14 +75,15 @@ fi
 # Remove broken symlinks for prompt module
 for symlink in "${symlinks_to_remove[@]}"; do
     symlink="modules/prompt/functions/${symlink}"
-    rm -f "${symlink}" &> /dev/null
+    rm -f "${symlink}"
+
     # Make git ignore the removed symlinks
     git update-index --assume-unchanged "${symlink}"
 done
 
 # Remove .git directories to reduce space used
 if [[ ${enable_dev_mode:-false} == false ]]; then
-    find "${base_dir}" -iname ".git*" -exec rm -rf {} \; &> /dev/null
+    find "${base_dir}" -iname ".git*" -exec rm -rf {} \;
 fi
 
 # Success!
