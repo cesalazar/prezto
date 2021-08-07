@@ -11,7 +11,7 @@ export BROWSER=/usr/bin/firefox-developer-edition
 export XDG_CONFIG_DIR=~/.config
 export XDG_CONFIG_HOME=~/.config
 
-# Reduce zsh timeout when switching mode
+# reduce zsh timeout when switching mode
 export KEYTIMEOUT=1
 
 # gpg config to sign commits
@@ -23,7 +23,7 @@ export LESS='-F -g -i -M -R -w -X -z-4'
 # bat
 export BAT_THEME="Monokai Extended Bright"
 
-# Avoid huge, scaled apps
+# avoid huge, scaled apps
 export QT_SCALE_FACTOR=1
 export QT_AUTO_SCREEN_SCALE_FACTOR=0
 export QT_QPA_PLATFORMTHEME=qt5ct
