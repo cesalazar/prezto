@@ -12,6 +12,10 @@ AUTOJUMP_SCRIPT=/usr/share/autojump/autojump.zsh
 # fzf
 [[ ! -f ~/.fzf.zsh ]] || source ~/.fzf.zsh
 
+# fzf-marks plugin
+FZF_MARKS_SOURCE=~/.zprezto/complements/fzf-marks/fzf-marks.plugin.zsh
+[[ ! -f "${FZF_MARKS_SOURCE}" ]] || source "${FZF_MARKS_SOURCE}"
+
 # thefuck
 [[ ! $(command -v thefuck) ]] || eval $(thefuck --alias)
 
