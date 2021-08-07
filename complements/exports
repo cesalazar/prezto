@@ -58,6 +58,9 @@ export NODE_PATH="$NPM_PACKAGES/lib/node_modules${NODE_PATH:+:$NODE_PATH}"
 export PATH="$NPM_PACKAGES/bin:$PATH"
 export npm_config_prefix="$NPM_PACKAGES"
 
+# local binaries and scripts
+export PATH="$HOME/.local/bin:${PATH}"
+
 # sail user and group inside docker
 export WWWUSER=$UID
 export WWWGROUP=$(id -g)
