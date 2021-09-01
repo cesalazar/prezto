@@ -61,8 +61,13 @@ export npm_config_prefix="$NPM_PACKAGES"
 # local binaries and scripts
 export PATH="$HOME/.local/bin:${PATH}"
 
-# sail user and group inside docker
+# user and group inside docker containers
 export WWWUSER=$UID
 export WWWGROUP=$(id -g)
+export UID=$UID
+export GID=$(id -g)
+
+# output format for docker
+export dkformat='table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
 
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
