@@ -17,7 +17,7 @@ alias cls='clear'
 alias pacman='pacman --color always'
 alias wic='which'
 alias yd='youtube-dl'
-alias mkdin='make-folder(){ mkdir -p "$1" && cd "$1"; unset -f make-folder; }; make-folder'
+alias mkdin='make-folder(){ mkdir "$@" && cd "$_"; unset -f make-folder; }; make-folder'
 alias cd..='cd ..'
 alias tree='tree -C'
 alias trel='tree | less'
@@ -32,14 +32,17 @@ alias sx=sxiv
 alias vis='vim -S Session.vim'
 alias lzd='lazydocker'
 alias fda='fd -HI'
+alias aga='ag -aU --hidden'
 alias stui=s-tui
 alias open='xdg-open'
 alias oo="spacefm . &> /dev/null &"
 alias mirror-screen='xrandr --auto --output DP1-1 --same-as eDP1'
 alias top-screen='xrandr --output eDP1 --auto --rotate normal --pos 0x0 --output HDMI2 --auto --rotate normal --above eDP1'
 alias fdiff='fancy-diff(){ diff -u "${@}" | diff-so-fancy | less; unset -f fancy-diff; }; fancy-diff'
+alias findfont='find-font(){ fc-list | grep "$1" | cut -f2 -d: | cut -c2-; unset -f find-font; }; find-font'
 alias ll='ls -alh'
 alias lll='ll | less'
+alias cd='better-cd(){ local arg=${1}; [[ ! -d "${1}" ]] && arg="${arg%/*}"; cd "${arg}"; unset -f better-cd; }; better-cd'
 [[ $(command -v exa) ]] && alias ll='exa -lag --git --color=always --group-directories-first --time-style=long-iso'
 [[ $(command -v bat) ]] && alias cat=bat
 
@@ -50,6 +53,7 @@ alias lll='ll | less'
 # AUR package managers: paru pikaur trizen yay yaourt
 # TODO: FIX: the pager lags hard until Enter is pressed
 alias yao='use-yay(){ yay "$@" --color always | bat -p; unset -f use-yay; }; use-yay'
+alias yab='yay-bin(){ yay -Ql "$@" | grep -Ev "/usr(/bin)?/$" | grep bin; unset -f yay-bin; }; yay-bin'
 alias parus='use-paru(){ paru --color always "$@" | bat -p; unset -f use-paru; }; use-paru'
 
 # Show zprezto git module aliases
@@ -68,7 +72,7 @@ alias jql="jq '.' -C | less"
 # parse YAML with yq, include colors, and pipe it to less
 alias yql="yq '.' -C | less"
 
-# docker
+# docker ($dkformat in the exports file!)
 alias dk='docker'
 alias dkatt='dk attach'
 alias dkc='docker-compose'
@@ -77,12 +81,16 @@ alias dki='dk images'
 alias dkih='dk image history'
 alias dkl='dk logs'
 alias dklf='dk logs -f'
-alias dkpsa='dk ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
+alias dkn='dk network'
+alias dkpsa='dk ps -a --format "${dkformat}"'
 alias dkrm='dk rm'
 alias dkrmf='dk rm -f'
 alias dkrmi='dk image rm'
 alias dkstp='dk stop'
 alias dkstr='dk start'
+alias dkv='dk volume'
+alias dkip="dk ps --format \"\${dkformat}\" | fzf --header-lines=1 | awk '{print \$1}' \
+  | xargs -I{} bash -c 'echo \"Name: {}\"; docker inspect {} | grep -Eo IPAddress.*[0-9]+.* | tr -d ,\\\"; echo' "
 alias dkps='[[ "$(find . -maxdepth 1 -regextype sed -regex \
   "./\(docker\|compose\).*.ya\?ml")" ]] && dkcps || dkpsa'
 
