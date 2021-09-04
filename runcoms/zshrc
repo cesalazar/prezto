@@ -12,6 +12,9 @@ fi
 # PowerLevel10k prompt config
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Include hidden files in completions
+_comp_options+=(globdots)
+
 # Aliases, exports, keybindings, and other sourcings
 if [[ -d "${ZDOTDIR:-$HOME}/.zprezto/complements/" ]]; then
   for file in "${ZDOTDIR:-$HOME}/.zprezto/complements/"*; do
