@@ -45,4 +45,20 @@ function change-aws-profile() {
 zle -N change-aws-profile
 bindkey -M viins '^[a' change-aws-profile
 
+# Use fzf to pick files and open them in $EDITOR
+function fzf-open-editor() {
+  local files
+  if [[ $(command -v fd) ]]; then
+    files=$(fd -t f | fzf)
+  else
+    files=$(find . -type f | fzf)
+  fi
+
+  # The prompt redrawing is funky, trying to figure out what works
+  [[ ${files} ]] && echo "${files}" | xargs -o "${EDITOR:-vim}" \
+    && printf "%s\n" " " " " && zle && zle redraw-prompt
+}
+zle -N fzf-open-editor
+bindkey -M viins '^[e' fzf-open-editor
+
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
