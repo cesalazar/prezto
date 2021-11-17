@@ -20,6 +20,8 @@ alias ewic='edit-which(){ local app=$(which ${@} | awk ''{print $NF}''); \
   [[ -f ${app} ]] && "${EDITOR:-vim}" "${app}" || echo "${app} not found"; unset -f edit-which; }; edit-which'
 alias yd='youtube-dl'
 alias mkdin='make-dir(){ local dir="$@"; mkdir -p "${dir}" && cd "${dir}"; unset -f make-dir; }; make-dir'
+alias mkdink='make-dir-kebab(){ local dir="${@}"; mkdin "$(echo ${dir// /-} \
+  | tr ''[:upper:]'' ''[:lower:]'')"; unset -f make-dir-kebab; }; make-dir-kebab'
 alias cd..='cd ..'
 alias tree='tree -C'
 alias trel='tree | less'
