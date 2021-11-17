@@ -15,7 +15,7 @@ export XDG_CONFIG_HOME=~/.config
 export KEYTIMEOUT=1
 
 # gpg config to sign commits
-export GPG_TTY=$(tty)
+GPG_TTY=$(tty); export GPG_TTY
 
 # less
 export LESS='-F -g -i -M -R -w -X -z-4'
@@ -63,9 +63,9 @@ export PATH="$HOME/.local/bin:${PATH}"
 
 # user and group inside docker containers
 export WWWUSER=$UID
-export WWWGROUP=$(id -g)
+WWWGROUP=$(id -g); export WWWGROUP
 export UID=$UID
-export GID=$(id -g)
+GID=$(id -g); export GID
 
 # output format for docker
 export dkformat='table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
