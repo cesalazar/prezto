@@ -19,8 +19,10 @@ GPG_TTY=$(tty); export GPG_TTY
 
 # less
 export LESS='-F -g -i -M -R -w -X -z-4'
+export PAGER=less
 
 # bat
+[[ $(command -v bat) ]] && export PAGER="bat --style=grid"
 export BAT_THEME="Monokai Extended Bright"
 
 # avoid huge, scaled apps
