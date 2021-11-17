@@ -46,6 +46,15 @@ alias fdiff='fancy-diff(){ diff -u "${@}" | diff-so-fancy | less; unset -f fancy
 alias findfont='find-font(){ fc-list | grep "$1" | cut -f2 -d: | cut -c2-; unset -f find-font; }; find-font'
 alias ll='ls -alh'
 alias lll='ll | less'
+alias pt=pritunl-client
+alias ptl='pt list'
+alias fuzzy-pritunl-connection='fuzzy-pritunl(){ \
+  local arg=${1:-start}; local client_id=$(pt list | head -n -1 | fzf --header-lines=3 | awk ''{print $2}''); \
+  [[ "${client_id}" ]] || return 0; echo ${client_id} | xargs -I{} bash -c "pritunl-client ${arg} {}"; \
+  unset -f fuzzy-pritunl; }; fuzzy-pritunl'
+alias ptc='fuzzy-pritunl-connection start'
+alias ptd='fuzzy-pritunl-connection stop'
+
 alias cd='better-cd(){ local arg=${1}; [[ ! -d "${1}" ]] && arg="${arg%/*}"; cd "${arg}"; unset -f better-cd; }; better-cd'
 [[ $(command -v exa) ]] && alias ll='exa -lag --git --color=always --group-directories-first --time-style=long-iso'
 [[ $(command -v bat) ]] && alias cat=bat
