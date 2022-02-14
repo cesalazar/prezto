@@ -22,7 +22,6 @@ export LESS='-F -g -i -M -R -w -X -z-4'
 export PAGER=less
 
 # bat
-[[ $(command -v bat) ]] && export PAGER="bat --style=grid"
 export BAT_THEME="Monokai Extended Bright"
 
 # avoid huge, scaled apps
@@ -59,9 +58,10 @@ export NPM_PACKAGES="$HOME/.npm-packages"
 export NODE_PATH="$NPM_PACKAGES/lib/node_modules${NODE_PATH:+:$NODE_PATH}"
 export PATH="$NPM_PACKAGES/bin:$PATH"
 export npm_config_prefix="$NPM_PACKAGES"
+export N_PREFIX="$HOME/nodejs-n"
 
 # local binaries and scripts
-export PATH="$HOME/.local/bin:${PATH}"
+export PATH="$HOME/.local/bin:$HOME/nodejs-n/bin:$PATH"
 
 # user and group inside docker containers
 export WWWUSER=$UID
