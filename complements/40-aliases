@@ -88,7 +88,10 @@ alias yql="yq '.' -C | less"
 # docker ($dkformat in the exports file!)
 alias dk='docker'
 alias dkatt='dk attach'
-alias dkc='docker-compose'
+alias dkc='dkcompose(){
+  conf="$(find . -maxdepth 2 -regextype sed -regex ".*docker-compose.ya\?ml$")"
+  [[ $conf && -d .git ]] && docker-compose -f ${conf} ${@} && return 0
+  return 1; unset -f dkcompose; }; dkcompose'
 alias dkcps='dkc ps'
 alias dki='dk images'
 alias dkih='dk image history'
@@ -104,8 +107,10 @@ alias dkstr='dk start'
 alias dkv='dk volume'
 alias dkip="dk ps --format \"\${dkformat}\" | fzf --header-lines=1 | awk '{print \$1}' \
   | xargs -I{} bash -c 'echo \"Name: {}\"; docker inspect {} | grep -Eo IPAddress.*[0-9]+.* | tr -d ,\\\"; echo' "
-alias dkps='[[ "$(find . -maxdepth 1 -regextype sed -regex \
-  "./\(docker\|compose\).*.ya\?ml")" ]] && dkcps || dkpsa'
+alias dkps='dkc-or-dk(){
+  conf="$(find . -maxdepth 2 -regextype sed -regex ".*docker-compose.ya\?ml$")"
+  [[ $conf && -d .git ]] && dkc ps && return 0
+  dkpsa; unset -f dkc-or-dk; }; dkc-or-dk'
 
 # vagrant
 alias vah='vagrant halt'
