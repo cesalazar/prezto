@@ -50,6 +50,10 @@ zstyle ':prezto:module:syntax-highlighting' pattern \
   'dkrmf '       'fg=yellow,bold,bg=#8F003E' \
   '*nuke-local*' 'fg=yellow,bold,bg=#8F003E'
 
+# Do not complete these filenames
+zstyle ':completion:*' ignored-patterns 'package-lock.json' \
+  ignored-patterns 'composer.lock'
+
 # Terminal
 zstyle ':prezto:module:terminal' auto-title 'yes'
 zstyle ':prezto:module:tmux:auto-start' remote 'no'
