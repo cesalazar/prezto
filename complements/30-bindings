@@ -62,4 +62,21 @@ function fzf-open-editor() {
 zle -N fzf-open-editor
 bindkey -M viins '^[e' fzf-open-editor
 
+# Use fzf to pick a npm script to execute
+function fzf-npm-run() {
+  [[ ! -f package.json ]] && return
+
+  jq -C --indent 1 '.scripts' package.json \
+    | grep -v "{" \
+    | grep -v "}" \
+    | tr -d ',' \
+    | sort \
+    | fzf --ansi \
+    | awk '{print $1}' \
+    | tr -d '":,' \
+    | xargs -I{} npm run {}
+}
+zle -N fzf-npm-run
+bindkey -M viins '^[n' fzf-npm-run
+
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
