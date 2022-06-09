@@ -72,4 +72,7 @@ GID=$(id -g); export GID
 # output format for docker
 export dkformat='table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
 
+# poetry for python
+export PATH="$HOME/.poetry/bin:$PATH"
+
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
