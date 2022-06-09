@@ -51,8 +51,8 @@ zstyle ':prezto:module:syntax-highlighting' pattern \
   '*nuke-local*' 'fg=yellow,bold,bg=#8F003E'
 
 # Do not complete these filenames
-zstyle ':completion:*' ignored-patterns 'package-lock.json' \
-  ignored-patterns 'composer.lock'
+zstyle ':completion:*' ignored-patterns '*package-lock.json' \
+  ignored-patterns '*composer.lock'
 
 # Terminal
 zstyle ':prezto:module:terminal' auto-title 'yes'
