@@ -80,19 +80,23 @@ alias nvfw='nv set firewall'
 alias nvks='nv set killswitch'
 alias nvst='nv status'
 
-# parse JSON with jq, include colors, and pipe it to less
-alias jql="jq '.' -C | less"
-# parse YAML with yq, include colors, and pipe it to less
-alias yql="yq '.' -C | less"
+# parse JSON or YAML and pipe it to less
+alias catpipe='cat-pipe(){
+  local files; files="$(find . -regextype sed -regex "${1}" | fzf)"
+  cat "${files}" | ${2} -C | less
+  unset -f cat-pipe; }; cat-pipe'
+alias jql='use-catpipe(){ catpipe ".*.json$" jq; unset -f use-catpipe; }; use-catpipe'
+alias yql='use-catpipe(){ catpipe ".*.ya\?ml$" yq; unset -f use-catpipe; }; use-catpipe'
 
 # docker ($dkformat in the exports file!)
 alias dk='docker'
 alias dkatt='dk attach'
 alias dkc='dkcompose(){
-  conf="$(find . -maxdepth 2 -regextype sed -regex ".*docker-compose.ya\?ml$")"
-  [[ $conf && -d .git ]] && docker-compose -f ${conf} ${@} && return 0
-  return 1; unset -f dkcompose; }; dkcompose'
-alias dkcps='dkc ps'
+  local conf; conf="$(find . -maxdepth 2 -regextype sed -regex ".*docker-compose.ya\?ml$")"
+  [[ ${conf} ]] && conf=("-f" "${conf}")
+  docker-compose ${conf[@]} ${@}
+  unset -f dkcompose; }; dkcompose'
+alias dkcps='dkc ps 2&>/dev/null'
 alias dki='dk images'
 alias dkih='dk image history'
 alias dkl='dk logs'
@@ -104,12 +108,25 @@ alias dkrmf='dk rm -f'
 alias dkrmi='dk image rm'
 alias dkstp='dk stop'
 alias dkstr='dk start'
+alias dkf='dkfuzzy(){
+  local option; option=${@}
+  local grep_filter
+  [[ ${option} != stop && ${option} != start ]] && \
+    echo "Invalid option, use ''start'' or ''stop''" && return 1
+  [[ ${option} == stop ]] && grep_filter=("grep" "-iv" "exited")
+  [[ ${option} == start ]] && grep_filter=("grep" "-iE" "(exited|NAMES)")
+  dkpsa | "${grep_filter[@]}" | fzf --header-lines=1 | awk ''{print $1}''\
+    | xargs -I{} docker ${option} {}
+  unset -f dkfuzzy; }; dkfuzzy'
+alias dkfstp='dkf stop'
+alias dkfstr='dkf start'
 alias dkv='dk volume'
 alias dkip="dk ps --format \"\${dkformat}\" | fzf --header-lines=1 | awk '{print \$1}' \
   | xargs -I{} bash -c 'echo \"Name: {}\"; docker inspect {} | grep -Eo IPAddress.*[0-9]+.* | tr -d ,\\\"; echo' "
 alias dkps='dkc-or-dk(){
+  # set -uxo pipefail
   conf="$(find . -maxdepth 2 -regextype sed -regex ".*docker-compose.ya\?ml$")"
-  [[ $conf && -d .git ]] && dkc ps && return 0
+  [[ $conf && -d .git ]] && dkcps && return 0
   dkpsa; unset -f dkc-or-dk; }; dkc-or-dk'
 
 # vagrant
@@ -154,5 +171,6 @@ alias ipython3='ipython3 --TerminalInteractiveShell.editing_mode=vi'
 # Globals
 alias -g L='| less'
 alias -g P='| pe | fzf | read filename; [ ! -z $filename ] && vim $filename'
+alias -g CP='| pbcopy'
 
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
