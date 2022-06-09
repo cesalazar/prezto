@@ -25,9 +25,12 @@ bindkey -r "^Y"-"^Z"
 # Redraw the prompt without creating a newline
 function redraw-prompt() {
   local precmd
+
   for precmd in $precmd_functions; do
     $precmd
   done
+
+  echo -e "\n"
   zle reset-prompt
 }
 zle -N redraw-prompt
@@ -36,6 +39,7 @@ zle -N redraw-prompt
 function change-aws-profile() {
   local aws_credentials
   aws_credentials=~/.aws/credentials
+
   if [[ -f "${aws_credentials}" ]]; then
     AWS_PROFILE=$(cat "${aws_credentials}" | grep "\[" | grep -v 'onelogin' \
       | tr -d "[]" | fzf --height 50%)
@@ -49,17 +53,38 @@ bindkey -M viins '^[a' change-aws-profile
 # Use fzf to pick files and open them in $EDITOR
 function fzf-open-editor() {
   local files
+
   if [[ $(command -v fd) ]]; then
-    files=$(fd -t f | fzf)
+    files=$(fd -H -tf -E .git | fzf)
   else
-    files=$(find . -type f | fzf)
+    files=$(find . -type f | grep -Ev "(node_modules|.git)")
   fi
 
   # The prompt redrawing is funky, trying to figure out what works
-  [[ ${files} ]] && echo "${files}" | xargs -o "${EDITOR:-vim}" \
-    && printf "%s\n" " " " " && zle && zle redraw-prompt
+  [[ ${files} ]] && printf "%s" "${files}" | xargs -o "${EDITOR:-vim}" \
+    && printf "%s\n" "${files}" && zle redraw-prompt
 }
 zle -N fzf-open-editor
 bindkey -M viins '^[e' fzf-open-editor
+
+# Use fzf to pick a npm script to execute
+function fzf-npm-run() {
+  [[ ! $(command -v jq) || ! -f package.json ]] && return
+
+  local script
+  script=$(jq -C --indent 1 '.scripts' package.json \
+    | \grep -Ev "(\{|\})" \
+    | tr -d ',' \
+    | sort \
+    | fzf --ansi \
+    | awk '{print $1}' \
+    | tr -d '"')
+
+  [[ ${script} ]] && npm run "${script%:}"
+
+  zle redraw-prompt
+}
+zle -N fzf-npm-run
+bindkey -M viins '^[n' fzf-npm-run
 
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
