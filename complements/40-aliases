@@ -31,7 +31,8 @@ alias timediff=pdd
 alias pwdc='pwd-copy(){ echo "$(pwd -P)/$1" | tr -d "\n" | pbcopy; unset -f pwd-copy; }; pwd-copy'
 alias dd='dd status=progress'
 alias awl='awless --color always'
-alias covid='covid-cli(){ curl -s -L covid19.trackercli.com/"$@"; unset -f covid-cli }; covid-cli'
+alias awlb='awl ls buckets --columns id,created'
+alias awli='awl ls instances --columns id,name,state,privateip,uptime --sort name --filter state=running'
 alias sx=sxiv
 alias vis='vim -S Session.vim'
 alias lzd='lazydocker'
@@ -54,9 +55,25 @@ alias fuzzy-pritunl-connection='fuzzy-pritunl(){ \
   unset -f fuzzy-pritunl; }; fuzzy-pritunl'
 alias ptc='fuzzy-pritunl-connection start'
 alias ptd='fuzzy-pritunl-connection stop'
+alias lsports='sudo netstat -lntup'
+alias editpdf='xournalpp'
+alias vactiv='source "$(find . -iwholename "*bin/activate" | head -n1)" &>/dev/null'
 
-alias cd='better-cd(){ local arg=${1}; [[ ! -d "${1}" ]] && arg="${arg%/*}"; cd "${arg}"; unset -f better-cd; }; better-cd'
-[[ $(command -v exa) ]] && alias ll='exa -lag --git --color=always --group-directories-first --time-style=long-iso'
+# yarn
+alias yi="yarn 2> /dev/null"
+alias yrn='yarn run'
+alias ysb='yrn storybook'
+alias ysp='yarn stop'
+alias yst='yarn start'
+alias cd='better-cd(){
+  local arg=${1};
+  [[ ! -d "${1}" ]] && arg="${arg%/*}";
+  cd "${arg}";
+  unset -f better-cd;
+}; better-cd'
+
+[[ $(command -v exa) ]] && alias ll="exa ${EZA_OPTS[@]}"
+[[ $(command -v eza) ]] && alias ll="eza ${EZA_OPTS[@]}"
 [[ $(command -v bat) ]] && alias cat=bat
 
 # Copy to clipboard in order of preference
@@ -75,18 +92,22 @@ alias zg="zprezto-git-help(){ cat ~/.zprezto/modules/git/README.md \
   | grep -E '^- \`' | fzf | xargs -I! printf '%s\n' '!'; unset -f zprezto-git-help; }; zprezto-git-help"
 
 # nordvpn
-alias nv=nordvpn
+# alias nv='nordvpn'
+alias nv='do-nv(){ nordvpn ${@:/st/status}; unset -f do-nv; }; do-nv'
 alias nvfw='nv set firewall'
 alias nvks='nv set killswitch'
+alias nvob='nv set obfuscate'
 alias nvst='nv status'
 
 # parse JSON or YAML and pipe it to less
 alias catpipe='cat-pipe(){
-  local files; files="$(find . -regextype sed -regex "${1}" | fzf)"
-  cat "${files}" | ${2} -C | less
+  local files; files="$(find . -regextype sed -regex "${1}" 2&>/dev/null | fzf --no-multi)"
+  [[ -n ${files} ]] || return
+  cat "${files}" | ${2} -C ${3} | less
+  printf "%s\n" "${files}"
   unset -f cat-pipe; }; cat-pipe'
-alias jql='use-catpipe(){ catpipe ".*.json$" jq; unset -f use-catpipe; }; use-catpipe'
-alias yql='use-catpipe(){ catpipe ".*.ya\?ml$" yq; unset -f use-catpipe; }; use-catpipe'
+alias jql='use-catpipe(){ catpipe ".*\.json$" jq ${1}; unset -f use-catpipe; }; use-catpipe'
+alias yql='use-catpipe(){ catpipe ".*\.ya\?ml$" yq ${1}; unset -f use-catpipe; }; use-catpipe'
 
 # docker ($dkformat in the exports file!)
 alias dk='docker'
@@ -118,6 +139,8 @@ alias dkf='dkfuzzy(){
   dkpsa | "${grep_filter[@]}" | fzf --header-lines=1 | awk ''{print $1}''\
     | xargs -I{} docker ${option} {}
   unset -f dkfuzzy; }; dkfuzzy'
+alias dkfrm="dkpsa | fzf --header-lines=1 | awk '{print \$1}' | xargs -I{} docker rm {}"
+alias dkfrmi="dki | fzf --header-lines=1 | awk '{print \$3}' | xargs -I{} docker rmi {} -f"
 alias dkfstp='dkf stop'
 alias dkfstr='dkf start'
 alias dkv='dk volume'
@@ -144,21 +167,6 @@ alias kc='kubectl'
 
 # path-extractor - https://github.com/edi9999/path-extractor
 alias pe=path-extractor
-
-# Source nvm only when needed
-alias snvm='source-nvm(){ \
-  unset npm_config_prefix; \
-  source /usr/share/nvm/init-nvm.sh; \
-  nvm current; \
-  unset -f source-nvm; \
-}; source-nvm'
-alias nvm='autosource-nvm(){ \
-  # Manually return to prev dir because the path becomes `/` when this execs
-  prev_pwd="$(pwd)";
-  unalias nvm; /
-  snvm && unset -f autosource-nvm; /
-  cd "${prev_pwd}";
-}; autosource-nvm'
 
 # Use vi keybindings in node REPL
 # Requires rlwrap and 'set editing-mode vi' in ~/.inputrc

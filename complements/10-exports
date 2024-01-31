@@ -8,7 +8,7 @@ export EDITOR=/usr/bin/vim
 export BROWSER=/usr/bin/firefox-developer-edition
 
 # xdg
-export XDG_CONFIG_DIR=~/.config
+export XDG_CONFIG_DIRS="~/.config:${XDG_CONFIG_DIRS}"
 export XDG_CONFIG_HOME=~/.config
 
 # reduce zsh timeout when switching mode
@@ -20,6 +20,9 @@ GPG_TTY=$(tty); export GPG_TTY
 # less
 export LESS='-F -g -i -M -R -w -X -z-4'
 export PAGER=less
+
+# eza (exa)
+export EZA_OPTS='-lag --git --color=always --group-directories-first --time-style=long-iso'
 
 # bat
 export BAT_THEME="Monokai Extended Bright"
@@ -61,7 +64,7 @@ export npm_config_prefix="$NPM_PACKAGES"
 export N_PREFIX="$HOME/nodejs-n"
 
 # local binaries and scripts
-export PATH="$HOME/.local/bin:$HOME/nodejs-n/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:$HOME/nodejs-n/bin:$PATH"
 
 # user and group inside docker containers
 export WWWUSER=$UID
