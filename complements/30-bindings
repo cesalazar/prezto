@@ -24,13 +24,9 @@ bindkey -r "^Y"-"^Z"
 
 # Redraw the prompt without creating a newline
 function redraw-prompt() {
-  local precmd
-
-  for precmd in $precmd_functions; do
-    $precmd
+  for precmd in ${precmd_functions}; do
+    ${precmd}
   done
-
-  echo -e "\n"
   zle reset-prompt
 }
 zle -N redraw-prompt
