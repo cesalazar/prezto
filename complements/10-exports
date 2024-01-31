@@ -8,7 +8,7 @@ export EDITOR=/usr/bin/vim
 export BROWSER=/usr/bin/firefox-developer-edition
 
 # xdg
-export XDG_CONFIG_DIR=~/.config
+export XDG_CONFIG_DIRS="~/.config:${XDG_CONFIG_DIRS}"
 export XDG_CONFIG_HOME=~/.config
 
 # reduce zsh timeout when switching mode
