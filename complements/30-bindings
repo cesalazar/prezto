@@ -71,12 +71,11 @@ function fzf-npm-run() {
   script=$(jq -C --indent 1 '.scripts' package.json \
     | \grep -Ev "(\{|\})" \
     | tr -d ',' \
-    | sort \
     | fzf --ansi \
     | awk '{print $1}' \
     | tr -d '"')
 
-  [[ ${script} ]] && npm run "${script%:}"
+  [[ ${script} ]] && yarn run "${script%:}"
 
   zle redraw-prompt
 }
