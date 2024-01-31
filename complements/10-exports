@@ -21,6 +21,9 @@ GPG_TTY=$(tty); export GPG_TTY
 export LESS='-F -g -i -M -R -w -X -z-4'
 export PAGER=less
 
+# eza (exa)
+export EZA_OPTS='-lag --git --color=always --group-directories-first --time-style=long-iso'
+
 # bat
 export BAT_THEME="Monokai Extended Bright"
 
