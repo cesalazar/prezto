@@ -53,12 +53,12 @@ function fzf-open-editor() {
   if [[ $(command -v fd) ]]; then
     files=$(fd -H -tf -E .git | fzf)
   else
-    files=$(find . -type f | grep -Ev "(node_modules|.git)")
+    files=$(find . -type f | grep -Ev "(node_modules|.git)" | fzf)
   fi
 
   # The prompt redrawing is funky, trying to figure out what works
   [[ ${files} ]] && printf "%s" "${files}" | xargs -o "${EDITOR:-vim}" \
-    && printf "%s\n" "${files}" && zle redraw-prompt
+    && printf "%s\n" "${files}" "" "" && zle redraw-prompt
 }
 zle -N fzf-open-editor
 bindkey -M viins '^[e' fzf-open-editor
