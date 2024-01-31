@@ -22,7 +22,7 @@ FZF_MARKS_SOURCE=~/.zprezto/complements/fzf-marks/fzf-marks.plugin.zsh
 # Start ssh-agent
 # https://wiki.archlinux.org/index.php/SSH_keys#Start_ssh-agent_with_systemd_user
 if ! pgrep -u "${USER}" ssh-agent > /dev/null; then
-  ssh-agent > ~/.ssh-agent-thing
+  ssh-agent >>! ~/.ssh-agent-thing
 fi
 if [[ ! "${SSH_AUTH_SOCK}" ]]; then
   eval "$(<~/.ssh-agent-thing)" > /dev/null
