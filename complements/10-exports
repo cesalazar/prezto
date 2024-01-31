@@ -64,7 +64,7 @@ export npm_config_prefix="$NPM_PACKAGES"
 export N_PREFIX="$HOME/nodejs-n"
 
 # local binaries and scripts
-export PATH="$HOME/.local/bin:$HOME/nodejs-n/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:$HOME/nodejs-n/bin:$PATH"
 
 # user and group inside docker containers
 export WWWUSER=$UID
