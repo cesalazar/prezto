@@ -102,4 +102,13 @@ function fzf-npm-kill() {
 zle -N fzf-npm-kill
 bindkey -M viins '^[N' fzf-npm-kill
 
+# Atuin (history manager)
+if [[ $(command -v atuin) ]]; then
+  export ATUIN_NOBIND="true"
+  eval "$(atuin init zsh)"
+
+  bindkey '^g' _atuin_search_widget
+  bindkey -M vicmd '/' _atuin_search_widget
+fi
+
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
