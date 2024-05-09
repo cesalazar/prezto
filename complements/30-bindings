@@ -62,6 +62,7 @@ function fzf-open-editor() {
 }
 zle -N fzf-open-editor
 bindkey -M viins '^[e' fzf-open-editor
+bindkey -M viins '^[f' fzf-open-editor
 
 # Use fzf to pick a npm script to execute
 function fzf-npm-run() {
