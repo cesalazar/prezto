@@ -76,7 +76,7 @@ function fzf-npm-run() {
     | awk '{print $1}' \
     | tr -d '"')
 
-  [[ ${script} ]] && yarn run "${script%:}"
+  [[ ${script} ]] && yarn run "${script%:}" && printf "\n\n"
 
   zle redraw-prompt
 }
