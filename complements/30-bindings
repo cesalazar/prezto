@@ -83,4 +83,23 @@ function fzf-npm-run() {
 zle -N fzf-npm-run
 bindkey -M viins '^[n' fzf-npm-run
 
+# Use fzf to pick a npm script to execute
+function fzf-npm-kill() {
+  local pids=
+
+  pids=$(
+    ps -eo pid,user,args --sort user \
+      | grep -v grep \
+      | grep -E "(npm|react|yarn|bun)" \
+      | fzf \
+      | awk '{print $1}'
+  )
+
+  [ ! -z ${pids} ] && echo ${pids} | xargs kill
+
+  zle redraw-prompt
+}
+zle -N fzf-npm-kill
+bindkey -M viins '^[N' fzf-npm-kill
+
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
