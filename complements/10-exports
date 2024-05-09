@@ -78,4 +78,7 @@ export dkformat='table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
 # poetry for python
 export PATH="$HOME/.poetry/bin:$PATH"
 
+# gem (instructed by `gem environment` when installing neovim)
+export PATH="$HOME/.local/share/gem/ruby/3.0.0/bin:$PATH"
+
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
