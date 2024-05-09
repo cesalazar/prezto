@@ -6,7 +6,7 @@ alias grep='grep -i --color'
 alias egrep='egrep -i --color'
 alias lgrep='ll | grep -E'
 alias lg=lgrep
-alias pag="ps aux | grep -v 'grep -i' | grep"
+alias pag="ps aux | grep -v 'grep -i' | grep -E"
 alias eng='env | grep'
 alias att='tmux attach || tmux'
 alias :q='exit'
@@ -72,6 +72,15 @@ alias cd='better-cd(){
   unset -f better-cd;
 }; better-cd'
 
+# ollama
+alias ol=ollama
+alias oll='ol list'
+alias ols='ol show'
+alias olr='ol remove'
+
+# print the dimensions of an image
+alias imgsize="ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0"
+
 [[ $(command -v exa) ]] && alias ll="exa ${EZA_OPTS[@]}"
 [[ $(command -v eza) ]] && alias ll="eza ${EZA_OPTS[@]}"
 [[ $(command -v bat) ]] && alias cat=bat
@@ -84,7 +93,6 @@ alias cd='better-cd(){
 # TODO: FIX: the pager lags hard until Enter is pressed
 alias yao='use-yay(){ yay "$@" --color always | bat -p; unset -f use-yay; }; use-yay'
 alias yab='yay-bin(){ yay -Ql "$@" | grep -Ev "/usr(/bin)?/$" | grep bin; unset -f yay-bin; }; yay-bin'
-alias parus='use-paru(){ paru --color always "$@" | bat -p; unset -f use-paru; }; use-paru'
 
 # Show zprezto git module aliases
 # Use: awk -F'\`' '{ print \$2 }'; to execute the selected command
