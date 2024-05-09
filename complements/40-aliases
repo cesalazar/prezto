@@ -160,6 +160,9 @@ alias dkps='dkc-or-dk(){
   [[ $conf && -d .git ]] && dkcps && return 0
   dkpsa; unset -f dkc-or-dk; }; dkc-or-dk'
 
+# stylua
+[[ $(command -v stylua) ]] && alias stylua="stylua --config-path=$HOME/.config/stylua/stylua.toml"
+
 # vagrant
 alias vah='vagrant halt'
 alias vha=vah
