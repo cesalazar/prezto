@@ -65,18 +65,6 @@ alias yrn='yarn run'
 alias ysb='yrn storybook'
 alias ysp='yarn stop'
 alias yst='yarn start'
-
-function fzf-node-kill() {
-  local pids=
-  pids=$(
-    ps -eo pid,user,args --sort user \
-      | grep -v grep \
-      | grep -E "(pnpm|npm|react|yarn|bun)" \
-      | fzf \
-      | awk '{print $1}'
-  )
-  [ ! -z ${pids} ] && echo ${pids} | xargs kill
-}
 alias npk=fzf-node-kill
 
 function list-package-json-entries() {

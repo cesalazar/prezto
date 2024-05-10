@@ -68,6 +68,9 @@ bindkey -M viins '^[f' fzf-open-editor
 function fzf-npm-run() {
   [[ ! $(command -v jq) || ! -f package.json ]] && return
 
+  local cmd
+  [[ -f yarn.lock ]] && cmd=yarn || cmd=npm
+
   local script
   script=$(jq -C --indent 1 '.scripts' package.json \
     | \grep -Ev "(\{|\})" \
@@ -76,31 +79,28 @@ function fzf-npm-run() {
     | awk '{print $1}' \
     | tr -d '"')
 
-  [[ ${script} ]] && yarn run "${script%:}" && printf "\n\n"
+  [[ ${script} ]] && ${cmd} run "${script%:}" && printf "\n\n"
 
   zle redraw-prompt
 }
 zle -N fzf-npm-run
 bindkey -M viins '^[n' fzf-npm-run
 
-# Use fzf to pick a npm script to execute
-function fzf-npm-kill() {
+# Use fzf to pick a node-related process to kill
+function fzf-node-kill() {
   local pids=
-
   pids=$(
     ps -eo pid,user,args --sort user \
       | grep -v grep \
-      | grep -E "(npm|react|yarn|bun)" \
+      | grep -E "(pnpm|npm|react|yarn|bun)" \
       | fzf \
       | awk '{print $1}'
   )
-
   [ ! -z ${pids} ] && echo ${pids} | xargs kill
-
   zle redraw-prompt
 }
-zle -N fzf-npm-kill
-bindkey -M viins '^[N' fzf-npm-kill
+zle -N fzf-node-kill
+bindkey -M viins '^[N' fzf-node-kill
 
 # Atuin (history manager)
 if [[ $(command -v atuin) ]]; then
