@@ -6,7 +6,7 @@ alias grep='grep -i --color'
 alias egrep='egrep -i --color'
 alias lgrep='ll | grep -E'
 alias lg=lgrep
-alias pag="ps aux | grep -v 'grep -i' | grep"
+alias pag="ps aux | grep -v 'grep -i' | grep -E"
 alias eng='env | grep'
 alias att='tmux attach || tmux'
 alias :q='exit'
@@ -65,12 +65,48 @@ alias yrn='yarn run'
 alias ysb='yrn storybook'
 alias ysp='yarn stop'
 alias yst='yarn start'
+alias npk=fzf-node-kill
+
+function list-package-json-entries() {
+  local query=${1:-.scripts}
+  local file=package.json
+  local cmd=cat
+
+  if [[ $(command -v jq) ]]; then
+    case ${query} in
+      s|scripts) query=".scripts" ;;
+      d|dependencies) query=".dependencies" ;;
+      D|devDependencies) query=".devDependencies" ;;
+    esac
+    cmd=(jq -C ${query})
+  fi
+
+  if [ -f package.json ]; then
+    ${cmd[@]} ${file} | grep -Ev '({|})' | less
+  else
+    printf "%s\n" "There's no package.json in this directory"
+  fi
+}
+alias np=list-package-json-entries
+alias nps="np scripts"
+alias npd="np dependencies"
+alias npD="np devDependencies"
+
 alias cd='better-cd(){
   local arg=${1};
   [[ ! -d "${1}" ]] && arg="${arg%/*}";
   cd "${arg}";
   unset -f better-cd;
 }; better-cd'
+
+# ollama
+alias ol=ollama
+alias oll='ol list'
+alias ols='ol show'
+alias olr='ol rm'
+
+# print the dimensions of an image
+alias imgsize="ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0"
 
 [[ $(command -v exa) ]] && alias ll="exa ${EZA_OPTS[@]}"
 [[ $(command -v eza) ]] && alias ll="eza ${EZA_OPTS[@]}"
@@ -84,7 +120,6 @@ alias cd='better-cd(){
 # TODO: FIX: the pager lags hard until Enter is pressed
 alias yao='use-yay(){ yay "$@" --color always | bat -p; unset -f use-yay; }; use-yay'
 alias yab='yay-bin(){ yay -Ql "$@" | grep -Ev "/usr(/bin)?/$" | grep bin; unset -f yay-bin; }; yay-bin'
-alias parus='use-paru(){ paru --color always "$@" | bat -p; unset -f use-paru; }; use-paru'
 
 # Show zprezto git module aliases
 # Use: awk -F'\`' '{ print \$2 }'; to execute the selected command
@@ -151,6 +186,9 @@ alias dkps='dkc-or-dk(){
   conf="$(find . -maxdepth 2 -regextype sed -regex ".*docker-compose.ya\?ml$")"
   [[ $conf && -d .git ]] && dkcps && return 0
   dkpsa; unset -f dkc-or-dk; }; dkc-or-dk'
+
+# stylua
+[[ $(command -v stylua) ]] && alias stylua="stylua --config-path=$HOME/.config/stylua/stylua.toml"
 
 # vagrant
 alias vah='vagrant halt'
