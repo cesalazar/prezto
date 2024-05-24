@@ -97,7 +97,7 @@ function fzf-node-kill() {
       | awk '{print $1}'
   )
   [ ! -z ${pids} ] && echo ${pids} | xargs kill
-  zle redraw-prompt
+  zle && zle redraw-prompt
 }
 zle -N fzf-node-kill
 bindkey -M viins '^[N' fzf-node-kill
