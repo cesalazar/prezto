@@ -73,7 +73,8 @@ export UID=$UID
 GID=$(id -g); export GID
 
 # output format for docker
-export dkformat='table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
+export dkformat="table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
+export dkcformat="table {{.Name}}\t{{.Service}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
 
 # poetry for python
 export PATH="$HOME/.poetry/bin:$PATH"

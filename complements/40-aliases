@@ -152,7 +152,7 @@ alias dkc='dkcompose(){
   [[ ${conf} ]] && conf=("-f" "${conf}")
   docker-compose ${conf[@]} ${@}
   unset -f dkcompose; }; dkcompose'
-alias dkcps='dkc ps 2&>/dev/null'
+alias dkcps='dkc ps --format "${dkcformat}" 2&>/dev/null'
 alias dki='dk images'
 alias dkih='dk image history'
 alias dkl='dk logs'
