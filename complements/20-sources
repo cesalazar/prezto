@@ -19,13 +19,17 @@ FZF_MARKS_SOURCE=~/.zprezto/complements/fzf-marks/fzf-marks.plugin.zsh
 # thefuck
 [[ ! $(command -v thefuck) ]] || eval $(thefuck --alias)
 
-# Start ssh-agent
+# SSH agent: use gcr socket if available, otherwise start ssh-agent
 # https://wiki.archlinux.org/index.php/SSH_keys#Start_ssh-agent_with_systemd_user
-if ! pgrep -u "${USER}" ssh-agent > /dev/null; then
-  ssh-agent >>! ~/.ssh-agent-thing
-fi
-if [[ ! "${SSH_AUTH_SOCK}" ]]; then
-  eval "$(<~/.ssh-agent-thing)" > /dev/null
+if [[ -S /run/user/1000/gcr/ssh ]]; then
+  export SSH_AUTH_SOCK=/run/user/1000/gcr/ssh
+else
+  if ! pgrep -u "${USER}" ssh-agent > /dev/null; then
+    ssh-agent >>! ~/.ssh-agent-thing
+  fi
+  if [[ ! "${SSH_AUTH_SOCK}" ]]; then
+    eval "$(<~/.ssh-agent-thing)" > /dev/null
+  fi
 fi
 
 # vim: ft=zsh fdm=manual tabstop=2 softtabstop=2 shiftwidth=2 expandtab:
