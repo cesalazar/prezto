@@ -3,9 +3,17 @@
 #
 
 # editor and browser
-export VISUAL=/usr/bin/vim
-export EDITOR=/usr/bin/vim
-export BROWSER=/usr/bin/firefox-developer-edition
+if [[ -z "$MYEDITOR" ]]; then
+  for editor in nvim vim vi nano; do
+    found="$(command -v "$editor")" && break
+  done
+
+  [[ -n "$found" ]] && export MYEDITOR="$found"
+fi
+
+export EDITOR="$MYEDITOR"
+export VISUAL="$MYEDITOR"
+export BROWSER=firefox-developer-edition
 
 # xdg
 export XDG_CONFIG_DIRS="~/.config:${XDG_CONFIG_DIRS}"
