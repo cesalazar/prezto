@@ -92,6 +92,10 @@ alias nps="np scripts"
 alias npd="np dependencies"
 alias npD="np devDependencies"
 
+alias pst="(pnpm run --color dev || pnpm run --color start) | tail -n +5"
+alias pri='\rm -rf node_modules && pnpm i'
+alias prist='pri && pst'
+
 alias cd='better-cd(){
   local arg=${1};
   [[ ! -d "${1}" ]] && arg="${arg%/*}";
