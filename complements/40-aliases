@@ -154,7 +154,7 @@ alias dkatt='dk attach'
 alias dkc='dkcompose(){
   local conf; conf="$(find . -maxdepth 2 -regextype sed -regex ".*docker-compose.ya\?ml$")"
   [[ ${conf} ]] && conf=("-f" "${conf}")
-  docker-compose ${conf[@]} ${@}
+  docker compose ${conf[@]} ${@}
   unset -f dkcompose; }; dkcompose'
 alias dkcps='dkc ps --format "${dkcformat}" 2&>/dev/null'
 alias dki='dk images'
