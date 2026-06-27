@@ -2,6 +2,9 @@
 # EXPORTS
 #
 
+# copy to ~/.tmux/.complements/local to update
+export TMUX_HOST_EMOJI="❐"
+
 # editor and browser
 if [[ -z "$MYEDITOR" ]]; then
   for editor in nvim vim vi nano; do
